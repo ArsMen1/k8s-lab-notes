@@ -1,0 +1,12 @@
+# Исключаем локальное состояние рабочего пространства (постоянно меняется)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace*.json
+
+# Исключаем кэш и индексы
+.obsidian/cache/
+.obsidian/graph.json
+.obsidian/copilot-index*.json
+
+# (Опционально) Исключаем код плагинов, если не хотите их версионировать
+# .obsidian/plugins/*/main.js
