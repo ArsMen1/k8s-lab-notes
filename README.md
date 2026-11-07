@@ -8,7 +8,6 @@
 
 * `Theory/` — теоретические заметки (Markdown, вики-ссылки Obsidian).
 * `Manifests/` — YAML для практики (`kubectl apply`).
-* `.obsidian/` — настройки vault (workspace в gitignore).
 
 ## Быстрый старт (Killercoda / любой кластер)
 
@@ -16,9 +15,12 @@
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
 cd k8s-lab-notes
 
-kubectl apply -f Manifests/base-deployment/prod-app.yaml
-kubectl apply -f Manifests/service-and-dns/service.yaml
-kubectl get deploy,rs,pods,svc,endpoints
+kubectl apply -f Manifests/base-deployment/prod-app.yaml \
+  -f Manifests/config-server/config-server.yaml \
+  -f Manifests/service-and-dns/service.yaml \
+  -f Manifests/service-and-dns/service-config-server.yaml
+
+kubectl get deploy,rs,pods,svc,EndpointSlice
 ```
 
 Дальше по этапам:

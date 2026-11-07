@@ -1,4 +1,4 @@
-# Откуда Kubernetes берет образ Nginx?
+# Откуда Kubernetes берет образ?
 
 В манифесте мы пишем:
 `image: nginx:alpine`

@@ -16,9 +16,12 @@
 Практика этапа 0:
 
 ```bash
-kubectl apply -f Manifests/base-deployment/prod-app.yaml
-kubectl apply -f Manifests/service-and-dns/service.yaml
-kubectl get deploy,rs,pods,svc,endpoints
+kubectl apply -f Manifests/base-deployment/prod-app.yaml \
+  -f Manifests/config-server/config-server.yaml \
+  -f Manifests/service-and-dns/service.yaml \
+  -f Manifests/service-and-dns/service-config-server.yaml
+  
+kubectl get deploy,rs,pods,svc,EndpointSlice
 ```
 
 ---
