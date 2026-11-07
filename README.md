@@ -18,6 +18,7 @@ cd k8s-lab-notes
 kubectl apply -f Manifests/base-deployment/prod-app.yaml \
   -f Manifests/config-server/config-server.yaml \
   -f Manifests/service-and-dns/service.yaml \
+  -f Manifests/service-and-dns/service-nodeport.yaml \
   -f Manifests/service-and-dns/service-config-server.yaml
 
 kubectl get deploy,rs,pods,svc,EndpointSlice

@@ -18,7 +18,7 @@ spec:
       containers:
       - name: config-server
         # Используем публичный образ (в проде здесь был бы ваш registry)
-        image: kaliware/config-server:latest 
+        image: kaliware/config-server:0.0.3-SNAPSHOT
         ports:
         - containerPort: 8888
         env:

@@ -55,11 +55,30 @@ Service смотрит только на метки Pod'ов.
 ## Полезные команды
 
 ```bash
-kubectl get pods -l app=payments-api
-kubectl get all -l tier=backend
-kubectl label pod <имя> env=lab
-kubectl label pod <имя> env-   # удалить label
+## 🔍 1. Фильтрация (Поиск по лейблам)
+Команды kubectl get поддерживают флаг -l (от слова label).
+
+kubectl get pods -l app=payments-api — поды только для сервиса оплаты.
+kubectl get all -l tier=backend — вообще все ресурсы (поды, сервисы, деплойменты), у которых есть метка tier=backend.
+kubectl get pods -l env=prod,tier=frontend — && поды, где есть И env=prod, И tier=frontend.
+kubectl get pods -l 'env in (prod, staging)' —  IN. поды в проде или на стейджинге.
+kubectl get pods -l 'env notin (dev)' —  NOTIN. всё, что не в деве.
+kubectl get pods -l '!app' — !. все поды, у которых вообще нет метки app.
+
+## 🏷️ 2. Управление лейблами (Добавление и Удаление)
+
+kubectl label pod <имя-пода> env=lab — добавить метку env=lab поду.
+kubectl label pod <имя-пода> env- — **удалить** метку env (обрати внимание на дефис в конце). 
+kubectl label pod <имя-пода> app=payments-api-new --overwrite — перезаписать существующую метку. Без флага --overwrite команда выдаст ошибку, если такая метка уже есть.
+
+## 👁️ 3. Просмотр меток
+kubectl get pods --show-labels — вывести список подов с колонкой всех их меток.
+kubectl get pods -L app,tier — вывести метки app и tier в виде отдельных колонок (удобно для чтения).
+kubectl describe pod <имя-пода> — посмотреть метки в секции Labels.
 ```
+
+## ⚠️ Важный нюанс про `--overwrite`
+Если ты пытаешься навесить метку, которая уже есть на объекте (например, `app=payments-api`), команда `kubectl label` завершится ошибкой. Kubernetes защищает от случайной перезаписи. Чтобы принудительно изменить значение, всегда добавляй `--overwrite`.
 
 ## Связанные заметки
 

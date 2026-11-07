@@ -8,5 +8,5 @@
 .obsidian/graph.json
 .obsidian/copilot-index*.json
 
-# (Опционально) Исключаем код плагинов, если не хотите их версионировать
-# .obsidian/plugins/*/main.js
+# Кэш плагина Git (чтобы не коммитить каждый auto-save)
+.obsidian/plugins/*/data.json

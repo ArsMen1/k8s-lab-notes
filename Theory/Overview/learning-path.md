@@ -30,11 +30,11 @@ kubectl get deploy,rs,pods,svc,EndpointSlice
 
 Цель: перестать воспринимать YAML как «магический скрипт».
 
-| Тема | Заметка | Практика |
-|------|---------|----------|
-| Labels/Selectors | [[labels-and-selectors]] | сломай selector у Service и посмотри пустые Endpoints |
-| Типы Service | [[service-types]] | `Manifests/service-and-dns/service-nodeport.yaml` |
-| Отладка | [[kubectl-debug]] · [[cheatsheet]] · [[how-kubectl-works]] | доведи любой Broken-сценарий до причины через describe |
+| Тема             | Заметка                                                    | Практика                                               |
+| ---------------- | ---------------------------------------------------------- | ------------------------------------------------------ |
+| Labels/Selectors | [[labels-and-selectors]]                                   | сломай selector у Service и посмотри пустые Endpoints  |
+| Типы Service     | [[service-types]]                                          | `Manifests/service-and-dns/service-nodeport.yaml`      |
+| Отладка          | [[kubectl-debug]] · [[cheatsheet]] · [[how-kubectl-works]] | доведи любой Broken-сценарий до причины через describe |
 
 Критерий «сдал этап»: можешь объяснить, почему Service не видит поды, без гугления.
 
