@@ -1,14 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: payments-svc # Имя сервиса. По нему будет создано DNS-имя.
-  namespace: default # Должен быть тот же, что и у подов.
+  # Имя сервиса. По нему будет DNS: payments-svc.default.svc.cluster.local
+  name: payments-svc
+  namespace: default
 spec:
+  # Как сервис находит поды: ищет label app=payments-api
   selector:
-    app:
-      payments-api # 👈 САМОЕ ВАЖНОЕ. Как сервис находит свои поды?
-      # Он ищет все поды с лейблом app=payments-api.
+    app: payments-api
   ports:
-    - port: 80 # Порт, на котором будет слушать сам Service.
-      targetPort: 80 # Порт, на котором слушает контейнер внутри пода.
-  type: ClusterIP # Тип сервиса. Об этом ниже.
+    - # Порт, на котором слушает сам Service (ClusterIP)
+      port: 80
+      # Порт контейнера внутри пода
+      targetPort: 80
+  # ClusterIP — доступен только внутри кластера
+  type: ClusterIP

@@ -17,8 +17,12 @@ Kubernetes (K8s) — это платформа для оркестрации к�
 3. [[glossary-core-objects#Deployment|Deployment]] — управляет ReplicaSet (обновления, откаты).
 4. [[glossary-core-objects#Service|Service]] — дает подам стабильный IP и DNS.
 
+Полный трек (что дальше и в каком порядке): [[learning-path]]
+
 ## Связанные глубокие темы:
 * Разница между Deployment и ReplicaSet: [[deployment-vs-replicaset]]
+* Labels и Selectors: [[labels-and-selectors]]
 * Зачем нужны Сервисы: [[why-service]]
 * Откуда берутся образы: [[where-is-nginx-from]]
 * Порядок применения манифестов: [[order-of-manifests]]
+* Как дебажить: [[kubectl-debug]]

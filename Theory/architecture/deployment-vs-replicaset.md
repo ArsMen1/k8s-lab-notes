@@ -21,3 +21,5 @@ Deployment — это обертка над ReplicaSet, которая позв�
 ## Связанные заметки:
 
 - Почему поды не могут жить без Service: [[why-service]]
+- Как работает обновление: [[rolling-update]]
+- Labels у template: [[labels-and-selectors]]

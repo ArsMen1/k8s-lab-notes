@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-api-probes
+  namespace: default
+  labels:
+    app: payments-api-probes
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payments-api-probes
+  template:
+    metadata:
+      labels:
+        app: payments-api-probes
+        tier: backend
+    spec:
+      containers:
+        - name: api
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          # Readiness: можно ли слать трафик на этот под
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          # Liveness: не завис ли nginx
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-probes-svc
+  namespace: default
+spec:
+  selector:
+    app: payments-api-probes
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
