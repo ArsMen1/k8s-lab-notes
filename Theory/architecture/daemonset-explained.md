@@ -40,4 +40,6 @@
 
 ## 🔗 Связанные заметки:
 * Базовый словарь сущностей: [[glossary-core-objects]]
-* В чем разница между Deployment и StatefulSet: [[deployment-vs-replicaset]]
+* Deployment vs ReplicaSet: [[deployment-vs-replicaset]]
+* Labels / node selection: [[labels-and-selectors]]
+* Что учить дальше: [[learning-path]]

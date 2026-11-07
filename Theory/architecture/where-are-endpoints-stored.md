@@ -10,7 +10,7 @@
 2. Ты создаешь `Deployment` (в файле).
 3. **Контроллер `endpoint-controller`** (программа внутри K8s) постоянно сканирует кластер.
 4. Он видит: «У сервиса `payments-svc` есть селектор, и есть поды, которые под него подходят».
-5. Он **автоматически** создает объект `Endpoints` (или `EndpointSlice` [citation:8]) и записывает туда IP-адреса подов.
+5. Он **автоматически** создает объект `Endpoints` (или `EndpointSlice` ) и записывает туда IP-адреса подов.
 6. `kube-proxy` на каждой ноде читает эти Endpoints и настраивает сетевые правила (iptables/IPVS), чтобы трафик шел на эти IP.
 
 ## Почему в Git нет файла endpoints.yaml?
@@ -20,4 +20,13 @@
 ## Полезные команды:
 
 - `kubectl get endpoints payments-svc` — посмотреть IP, которые контроллер записал.
-- `kubectl get endpointslices` — более новый и масштабируемый способ (используется в больших кластерах) [citation:4].
+- `kubectl get endpointslices` — более новый и масштабируемый способ (используется в больших кластерах).
+
+## Важно про Ready
+
+В Endpoints попадают только поды, которые **Ready**. Если упал readinessProbe — IP пропадает из Endpoints, хотя под еще Running. См. [[health-probes]].
+
+## Связанные заметки:
+
+- Зачем Service: [[why-service]]
+- Отладка пустых Endpoints: [[kubectl-debug]]

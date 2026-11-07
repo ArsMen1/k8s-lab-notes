@@ -30,3 +30,6 @@ Kubernetes (CoreDNS) автоматически создает запись:
 ## Связанные заметки:
 
 - Где хранятся вычисляемые данные: [[where-are-endpoints-stored]]
+- Labels, которыми Service выбирает поды: [[labels-and-selectors]]
+- Типы Service: [[service-types]]
+- Probes влияют на Endpoints: [[health-probes]]

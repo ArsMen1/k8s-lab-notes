@@ -1,0 +1,34 @@
+# 1. Deployment для самого Config Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server
+  labels:
+    app: config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-server
+  template:
+    metadata:
+      labels:
+        app: config-server
+    spec:
+      containers:
+      - name: config-server
+        # Используем публичный образ (в проде здесь был бы ваш registry)
+        image: kaliware/config-server:latest 
+        ports:
+        - containerPort: 8888
+        env:
+        # 👇 Указываем Git-репозиторий, откуда брать конфиги.
+        # Для теста используем публичный репозиторий Spring.
+        - name: CONFIG_SERVER_GIT_URI
+          value: "https://github.com/spring-cloud-samples/config-repo"
+        # 👇 Включаем принудительное обновление (полезно для тестов)
+        - name: CONFIG_SERVER_FORCE_PULL
+          value: "true"
+        # 👇 Опционально: можно задать ключ шифрования, если нужно
+        # - name: CONFIG_ENCRYPTION_KEY
+        #   value: "my-super-secret-key"
