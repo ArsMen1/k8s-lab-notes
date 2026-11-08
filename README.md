@@ -1,62 +1,61 @@
 # K8s Lab Notes
 
-Репозиторий для изучения Kubernetes (low-level) и ведения конспекта в Obsidian.
+Конспект Kubernetes и лаборатория поломок. Теория объясняет, из чего кластер собран. Манифесты показывают, как это лежит в git. Лаборатория проверяет, можешь ли ты по симптомам дойти до причины.
 
-Главный трек обучения: [`Theory/Overview/learning-path.md`](Theory/Overview/learning-path.md)
+## Как зайти
+
+1. [Проверка уровня](labs/00-level-check.md) — семь вопросов. Ответов рядом нет. Если завис, там ссылка на нужную заметку.
+2. [Первая неделя в «Сдаче»](labs/incidents.md) — семь инцидентов. Сначала кластер, потом разбор в `labs/debrief/`.
+3. Теорию целиком, если хочется карты, а не пожара: [`Theory/00-overview/learning-path.md`](Theory/00-overview/learning-path.md).
 
 ## Структура
 
-* `Theory/` — теоретические заметки (Markdown, вики-ссылки Obsidian).
-* `Manifests/` — YAML для практики (`kubectl apply`).
+```text
+Theory/                 заметки, по трекам
+  00-overview/          что такое кластер, глоссарий, трек, открытые вопросы
+  01-workloads/         Pod, Deployment, DaemonSet, пробы, rollout
+  02-networking/        Service, Endpoints, путь пакета, Ingress
+  03-scheduling/        taints, tolerations, affinity
+  04-config/            ConfigMap, Secret, 12 факторов, Spring Config
+  05-operations/        kubectl, образы, порядок apply
+  06-organization/      namespace и labels
+Manifests/              желаемое состояние, один kind на файл
+  payments-api/         рабочий сервис
+  config-server/        config server
+  echo/                 сервис в отдельном namespace
+  incidents/            специально сломанные сценарии 01–07
+labs/                   уровень, история инцидентов, разборы отдельно
+```
 
-## Быстрый старт (Killercoda / любой кластер)
+Карта каталога манифестов: [`Manifests/README.md`](Manifests/README.md).
+
+## Быстрый старт
+
+Нужен любой кластер: Killercoda, minikube, kind.
 
 ```bash
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
 cd k8s-lab-notes
 
-kubectl apply -f Manifests/base-deployment/prod-app.yaml \
-  -f Manifests/config-server/config-server.yaml \
-  -f Manifests/service-and-dns/service.yaml \
-  -f Manifests/service-and-dns/service-nodeport.yaml \
-  -f Manifests/service-and-dns/service-config-server.yaml
+kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/config-server/
+kubectl apply -f Manifests/echo/
 
-kubectl get deploy,rs,pods,svc,EndpointSlice
+kubectl -n payments get deploy,rs,pods,svc
 ```
 
-Дальше по этапам:
+`kubectl apply -f Manifests/` целиком не запускай. Внутри `incidents/` лежат поломки, их применяют по номеру дня из истории.
+
+Снаружи учебный NodePort:
 
 ```bash
-# Этап 1 — сеть наружу в лабе
-kubectl apply -f Manifests/service-and-dns/service-nodeport.yaml
-
-# Этап 2 — probes / config / namespace
-kubectl apply -f Manifests/probes/payments-api-with-probes.yaml
-kubectl apply -f Manifests/config/payments-config.yaml
-kubectl apply -f Manifests/namespaces/lab-namespace.yaml
+kubectl apply -f Manifests/payments-api/service-nodeport.yaml
 ```
 
-## Карта заметок
-
-### Overview
-* [`what-is-kubernetes`](Theory/Overview/what-is-kubernetes.md)
-* [`glossary-core-objects`](Theory/Overview/glossary-core-objects.md)
-* [`learning-path`](Theory/Overview/learning-path.md) ← **с чего продолжать**
-
-### Architecture & networking
-* Deployment vs ReplicaSet, Service, Endpoints, DaemonSet, Labels
-* Типы Service: ClusterIP / NodePort / LoadBalancer
-
-### Workloads & config
-* Health probes, rolling update, ConfigMap/Secret, Namespaces
-
-### Operations / kubectl
-* [`kubectl-debug`](Theory/operations/kubectl-debug.md) — алгоритм отладки
-* [`cheatsheet`](Theory/kubectl/cheatsheet.md) · [`how-kubectl-works`](Theory/kubectl/how-kubectl-works.md)
+Порт 30080. В проде этого файла нет, снаружи ходят через Ingress или балансировщик.
 
 ## Как вести конспект
 
-1. Одна тема = одна заметка.
-2. В конце — 3–5 строк «что увидел в кластере».
-3. Ссылки между заметками через `[[wiki-links]]`.
-4. В Git только желаемое состояние; Endpoints/статусы подов не коммитить.
+1. Одна тема — одна заметка, ссылки между ними через `[[wiki-links]]`.
+2. В конце заметки — несколько строк, что увидел в кластере.
+3. В git только желаемое состояние. Endpoints, статусы подов и настоящие пароли не коммитят.
