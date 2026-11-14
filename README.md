@@ -6,7 +6,9 @@
 
 1. [Проверка уровня](labs/00-level-check.md).
 2. [Первая неделя инцидентов](labs/incidents.md) — сначала расследуй, затем открывай разборы в `labs/debrief/`.
-3. [Production Support практикум](labs/production-support/README.md) — PVC Pending, OOMKilled, Service/DNS, scheduling, Ingress и HPA.
+3. [P0 Fundamentals](labs/fundamentals-p0/README.md) — Storage, StatefulSet, RBAC, QoS, DNS и NetworkPolicy.
+4. [P1 labs](labs/fundamentals-p1/README.md) — Ingress/TLS, HPA и Observability.
+5. [Production Support практикум](labs/production-support/README.md) — диагностика типовых инцидентов.
 4. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
 5. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
 
@@ -21,6 +23,8 @@
 - `Theory/06-organization/` — Namespace, labels, selectors и annotations.
 - `Theory/07-crd/` — CRD, Custom Resources, schema, versioning, controllers и operators.
 - `Theory/08-cluster-admin/` — kubeadm, архитектура кластеров и обновления.
+- `Theory/09-storage/` … `14-networkpolicy/` — Storage, StatefulSet, RBAC, QoS, DNS/CoreDNS и NetworkPolicy.
+- `Theory/15-hpa/` и `16-observability/` — autoscaling и мониторинг.
 - `Manifests/` — учебные рабочие и намеренно сломанные Kubernetes-манифесты.
 - `labs/` — проверка знаний, сценарии инцидентов, разборы и Production Support runbooks.
 
