@@ -1,19 +1,23 @@
-# Lab: диагностика LDAP / OIDC / Kubernetes RBAC
+# Lab: LDAP / OIDC / Kubernetes RBAC
 
 Цель — научиться локализовать отказ по слоям, а не считать любую ошибку kubectl проблемой RBAC.
 
-Лаборатория концептуальная: она не требует реального AD, Dex или Keycloak. Используй тестовый кластер и безопасные тестовые credentials. Не меняй настройки production API Server и не отключай проверку TLS.
+## Практический стенд: Keycloak + OpenLDAP
+
+Начни с [hands-on лаборатории Keycloak + OpenLDAP](keycloak-openldap/README.md). Она поднимает изолированный локальный LDAP-каталог и Keycloak, подключает LDAP federation и проверяет импорт пользователя arsen и группы k8s-readers.
+
+Это первый этап: HTTP используется только локально для UI и discovery. Не подключай его к Kubernetes. Следующий этап потребует HTTPS issuer, доверенной CA, OIDC client и кластера, где доступна настройка kube-apiserver authentication.
 
 ## Сценарий 1 — 401 Unauthorized
 
-Пользователь успешно проходит SSO в браузере, но `kubectl get pods` отвечает 401.
+Пользователь успешно проходит SSO в браузере, но kubectl get pods отвечает 401.
 
 Порядок расследования:
-1. `kubectl config current-context` — тот ли кластер?
-2. `kubectl config view --minify` — какой user и exec plugin настроены? Не используй `--raw` в тикете.
+1. kubectl config current-context — тот ли кластер?
+2. kubectl config view --minify — какой user и exec plugin настроены? Не используй --raw в тикете.
 3. Запусти credential plugin штатным способом и проверь его exit code/logs, не выводя token.
 4. Убедись, что plugin выдаёт ID token для ожидаемого OIDC client.
-5. Сравни безопасно декодированные claims: `iss`, `aud`, `exp`, `sub`, username и groups.
+5. Сравни безопасно декодированные claims: iss, aud, exp, sub, username и groups.
 6. Проверь issuer URL, discovery/JWKS и TLS trust API Server.
 7. Проверь синхронизацию времени.
 
@@ -21,15 +25,15 @@
 
 ## Сценарий 2 — 403 Forbidden
 
-Пользователь входит успешно, но `kubectl get pods -n payments` отвечает 403.
+Пользователь входит успешно, но kubectl get pods -n payments отвечает 403.
 
-```bash
+~~~bash
 kubectl auth whoami
 kubectl auth can-i get pods -n payments
 kubectl auth can-i get pods/log -n payments
 kubectl get role,rolebinding -n payments
 kubectl get clusterrole,clusterrolebinding
-```
+~~~
 
 Проверь:
 - распознанный username;
@@ -39,25 +43,18 @@ kubectl get clusterrole,clusterrolebinding
 - точное совпадение subject в RoleBinding;
 - namespace и нужные verbs/resources/subresources.
 
-Не выдавай `cluster-admin` как диагностический workaround. Сначала найди минимально недостающее разрешение.
+Не выдавай cluster-admin как диагностический workaround. Сначала найди минимально недостающее разрешение.
 
 ## Сценарий 3 — LDAP login failed
 
 Если IdP не может проверить пользователя через LDAP/AD, иди от сети к приложению:
 
-```bash
+~~~bash
 nslookup ldap.corp.example.com
 nc -vz ldap.corp.example.com 636
-```
+~~~
 
-Далее проверь:
-- TLS chain и hostname;
-- bind DN/service account и срок действия credentials;
-- base DN, user filter, group search;
-- наличие пользователя и ожидаемой группы;
-- вложенные группы и ограничения поиска.
-
-Если используешь `ldapsearch`, передавай пароль через интерактивный `-W`, а не через `-w`. Не публикуй bind password и полные LDAP dumps.
+Далее проверь TLS chain и hostname, bind DN/service account, base DN, user filter, group search, вложенные группы и ограничения поиска. Если используешь ldapsearch, передавай пароль через интерактивный -W, а не через -w. Не публикуй bind password и полные LDAP dumps.
 
 ## Сценарий 4 — группа добавлена, но доступа всё ещё нет
 
