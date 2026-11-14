@@ -31,14 +31,17 @@
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
 cd k8s-lab-notes
 
+kubectl apply -f Manifests/payments-api/namespace.yaml
 kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
+kubectl apply -f Manifests/echo/namespace.yaml
 kubectl apply -f Manifests/echo/
 
 kubectl -n payments get deploy,rs,pods,svc
 ```
 
-Не применяй `Manifests/` целиком: внутри есть намеренно сломанные сценарии и отдельные лаборатории CRD. Применяй только каталог текущего упражнения и соблюдай порядок из его README.
+Не применяй `Manifests/` целиком: внутри есть намеренно сломанные сценарии и отдельные лаборатории CRD. Для каталогов приложений сначала создавай namespace отдельным файлом, затем применяй каталог; порядок файлов при `kubectl apply -f <directory>/` не следует считать зависимостно-безопасным. Соблюдай README конкретного упражнения.
 
 Снаружи учебный NodePort:
 
