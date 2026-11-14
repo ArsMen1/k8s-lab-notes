@@ -62,13 +62,7 @@ kubectl uncordon <control-plane-node>
 
 ## 4. Обновление worker nodes по одной
 
-С control plane:
-
-```bash
-kubectl drain <worker-node> --ignore-daemonsets
-```
-
-На worker node обнови kubeadm:
+На worker node сначала обнови kubeadm и локальную kubelet configuration:
 
 ```bash
 sudo apt-mark unhold kubeadm
@@ -78,7 +72,13 @@ sudo apt-mark hold kubeadm
 sudo kubeadm upgrade node
 ```
 
-Затем обнови kubelet и kubectl (если kubectl установлен на worker):
+Затем с control plane выполни drain worker перед обновлением kubelet:
+
+```bash
+kubectl drain <worker-node> --ignore-daemonsets
+```
+
+После успешного drain обнови kubelet и kubectl (если kubectl установлен на worker):
 
 ```bash
 sudo apt-mark unhold kubelet kubectl
