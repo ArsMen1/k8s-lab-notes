@@ -47,7 +47,7 @@ kubectl -n payments get endpointslices
 
 ## Этап 3 — CRD и Operators
 
-Отдельный углублённый трек: [[learning-path]] в каталоге CRD (если Obsidian разрешает неоднозначное имя, открой файл по пути `Theory/07-crd/learning-path.md`).
+Отдельный углублённый трек: [CRD learning path](../07-crd/learning-path.md).
 
 Порядок:
 1. CRD и Custom Resource.
