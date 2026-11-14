@@ -30,11 +30,11 @@
 
 Диагностика:
 
-    kubectl get hpa web -n lab-p1-ingress
-    kubectl describe hpa web -n lab-p1-ingress
-    kubectl top pods -n lab-p1-ingress
+    kubectl get hpa web -n lab-p1-hpa
+    kubectl describe hpa web -n lab-p1-hpa
+    kubectl top pods -n lab-p1-hpa
     kubectl get apiservices | grep metrics
-    kubectl get deployment web -n lab-p1-ingress -o yaml
+    kubectl get deployment web -n lab-p1-hpa -o yaml
 
 Проверь metrics-server, CPU requests, selector, targetRef, readiness и наличие метрик.
 
