@@ -80,9 +80,12 @@
     kubectl get endpointslices -n <namespace> -l kubernetes.io/service-name=<service> -o yaml
     kubectl describe pod <pod> -n <namespace>
     kubectl get networkpolicy -n <namespace>
+    kubectl get svc kube-dns -n kube-system
+    kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide
+    kubectl logs -n kube-system -l k8s-app=kube-dns --tail=100
     kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
 
-Если разрешён диагностический Pod, проверь DNS из того же namespace:
+Если разрешён диагностический Pod, проверь DNS из того же namespace. При сбое DNS отдельно проверь Service kube-dns и CoreDNS Pods (в некоторых дистрибутивах имена/labels отличаются):
 
     kubectl run netcheck -n <namespace> --rm -it --restart=Never --image=busybox:1.36 -- nslookup <service>.<namespace>.svc.cluster.local
 
