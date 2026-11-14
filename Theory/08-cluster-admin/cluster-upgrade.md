@@ -127,3 +127,5 @@ kubectl get --raw='/readyz?verbose'
 - [[pod-disruption-budget]]
 - [[health-probes]]
 - [[rolling-update]]
+
+Официальные инструкции меняются между minor-релизами: [kubeadm upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/) · [Version Skew Policy](https://kubernetes.io/releases/version-skew-policy/). Перед реальным обновлением используй страницу для конкретной целевой версии.
