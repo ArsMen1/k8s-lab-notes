@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: load-generator
-  namespace: lab-p1
+  namespace: lab-p1-hpa
 spec:
   restartPolicy: Never
   containers:
