@@ -1,0 +1,11 @@
+# TEMPLATE ONLY. Replace provisioner and parameters using your CSI vendor documentation.
+# This file is not a ready-to-apply manifest.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: lab-csi-example
+provisioner: REPLACE_WITH_INSTALLED_CSI_DRIVER
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters: {}
