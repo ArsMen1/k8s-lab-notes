@@ -1,0 +1,24 @@
+dn: ou=people,dc=example,dc=org
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=arsen,ou=people,dc=example,dc=org
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Arsen Lab
+sn: Lab
+givenName: Arsen
+uid: arsen
+mail: arsen@example.org
+
+dn: cn=k8s-readers,ou=groups,dc=example,dc=org
+objectClass: top
+objectClass: groupOfNames
+cn: k8s-readers
+member: uid=arsen,ou=people,dc=example,dc=org
