@@ -4,6 +4,8 @@
 
 ## Prerequisites
 
+Для Minikube один конкретный вариант controller: `minikube addons enable ingress`, затем дождись Pod в namespace ingress-nginx и проверь `kubectl get ingressclass`. У Minikube должен быть доступен адрес `minikube ip`. Для других кластеров установи совместимый controller по официальной инструкции его проекта.
+
     kubectl get ingressclass
     kubectl get nodes
     kubectl config current-context
@@ -15,7 +17,7 @@
     kubectl apply -f Manifests/ingress/namespace.yaml
     kubectl apply -f Manifests/ingress/deployment.yaml
     kubectl apply -f Manifests/ingress/service.yaml
-    kubectl rollout status deployment/web -n lab-p1
+    kubectl rollout status deployment/web -n lab-p1-ingress
 
 ## Create test certificate
 
