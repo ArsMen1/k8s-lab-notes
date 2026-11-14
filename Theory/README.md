@@ -27,7 +27,7 @@
 | P1 | Ingress/TLS | [Теория](02-networking/ingress-and-loadbalancer.md) · [Манифесты](../Manifests/ingress/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
 | P1 | HPA/metrics | [Теория](15-hpa/README.md) · [Манифесты](../Manifests/hpa/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
 | P1 | Observability | [Теория](16-observability/README.md) · [Runbook](../Manifests/observability/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
-| P0 | Troubleshooting | [Production Support](../labs/production-support/README.md) · [P0 fundamentals](../labs/fundamentals-p0/README.md) |
+| P0 | Troubleshooting | [Production Support](../labs/production-support/README.md) · [P0 fundamentals](../labs/fundamentals-p0/README.md) · [standalone troubleshooting labs](../labs/troubleshooting/README.md) |
 
 P0 означает, что теория, примеры манифестов и базовые лаборатории добавлены; их ещё нужно пройти в тестовом кластере. Для P1 добавлены theory, manifests/runbooks и лаборатории; Ingress Controller, metrics-server и Prometheus/Grafana stack остаются внешними prerequisites и не устанавливаются этим репозиторием автоматически. Ни один из этих стендов не считается runtime-проверенным.
 
