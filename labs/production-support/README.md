@@ -215,6 +215,95 @@
 
 **Проверка:** тест из исходного namespace проходит к целевому Service; неразрешённые направления остаются заблокированными; DNS резолвится.
 
+---
+
+## 9. Node NotReady
+
+**Симптом:** Node condition Ready=False/Unknown; Pod на узле могут стать NotReady или быть rescheduled после controller eviction.
+
+**Диагностика**
+
+    kubectl get nodes -o wide
+    kubectl describe node <node>
+    kubectl get pods -A -o wide --field-selector spec.nodeName=<node>
+    kubectl get events -A --sort-by=.metadata.creationTimestamp
+    kubectl get lease -n kube-node-lease <node> -o yaml
+
+Проверь node conditions, taints, heartbeat/Lease, kubelet/runtime status, CNI, disk/memory pressure и доступность control plane. Для managed Kubernetes используй также provider node health events.
+
+**Root cause:** отдели недоступность Node/control plane от kubelet/runtime crash, сетевой проблемы, нехватки ресурсов и планового maintenance.
+
+**Безопасное исправление:** не выполняй drain/delete node автоматически. Сначала проверь workload replicas, PDB, capacity других узлов и владельца инфраструктуры. Перезапуск kubelet/Node — change action для администратора платформы.
+
+**Проверка:** Node Ready стабильно, системные Pods healthy, workload восстановлен, нет повторных node condition transitions.
+
+---
+
+## 10. DiskPressure и ephemeral storage
+
+**Симптом:** Node показывает DiskPressure, Pod evicted, container logs или writable layer занимают локальный диск.
+
+**Диагностика**
+
+    kubectl describe node <node>
+    kubectl get pods -A -o wide --field-selector spec.nodeName=<node>
+    kubectl describe pod <pod> -n <namespace>
+    kubectl get events -A --sort-by=.metadata.creationTimestamp
+    kubectl top nodes
+
+Проверь node filesystem/image filesystem, container logs, image garbage collection, emptyDir, writable layers и ephemeral-storage requests/limits. kubectl top обычно не показывает полный disk usage; нужны node exporter/provider metrics и безопасные host diagnostics.
+
+**Root cause:** раздели imagefs/nodefs pressure, log growth, emptyDir exhaustion, image accumulation и системный диск.
+
+**Безопасное исправление:** согласуй log rotation/retention, очистку только неиспользуемых images по процедуре runtime, ограничения emptyDir и корректные ephemeral-storage requests/limits. Не удаляй вручную файлы из runtime directories.
+
+**Проверка:** DiskPressure исчез, filesystem usage ниже eviction threshold, нет новых eviction и logging pipeline продолжает работать.
+
+---
+
+## 11. FailedMount / FailedAttachVolume
+
+**Симптом:** Pod застрял в ContainerCreating; Events содержат FailedMount или FailedAttachVolume.
+
+**Диагностика**
+
+    kubectl describe pod <pod> -n <namespace>
+    kubectl get pvc -n <namespace>
+    kubectl describe pvc <claim> -n <namespace>
+    kubectl get pv
+    kubectl get storageclass
+    kubectl get csidrivers
+    kubectl get pods -n kube-system -o wide
+
+Проверь PVC Bound, PV node affinity, access mode, attachment limits, CSI controller/node plugin, Secret/ConfigMap references и filesystem errors.
+
+**Root cause:** различи несуществующий Secret/ConfigMap, unbound PVC, attach conflict, topology mismatch, driver failure и permission/filesystem issue.
+
+**Безопасное исправление:** не удаляй PVC/PV и не делай force detach без подтверждения, что volume не используется другой Node. Исправляй конкретную dependency или передавай CSI issue владельцу storage.
+
+**Проверка:** mount завершён, Pod Ready, приложение видит ожидаемый filesystem и данные.
+
+---
+
+## 12. ImagePullBackOff
+
+**Симптом:** Pod не стартует; Events содержат ErrImagePull/ImagePullBackOff.
+
+**Диагностика**
+
+    kubectl describe pod <pod> -n <namespace>
+    kubectl get pod <pod> -n <namespace> -o jsonpath='{.spec.containers[*].image}{"\n"}'
+    kubectl get serviceaccount <service-account> -n <namespace> -o yaml
+    kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
+
+Проверь image name/tag/digest, registry reachability, DNS/network, rate limits, imagePullSecrets и права ServiceAccount. Не выводи содержимое registry credentials.
+
+**Root cause:** отличи manifest typo/tag missing от unauthorized, TLS/CA error, DNS/timeout и registry rate limit.
+
+**Безопасное исправление:** исправь подтверждённый image reference или настрой scoped pull secret через secret-management процесс. Не используй публичный/анонимный доступ как обход приватного registry.
+
+**Проверка:** образ скачан, контейнер стартовал, Pod Ready, image digest соответствует ожидаемому release.
+
 ## Шаблон RCA
 
 1. **Impact:** какие пользователи/операции затронуты?
