@@ -31,8 +31,8 @@ Ingress и приложения могут использовать Secret ти�
 
 Для безопасной проверки не выводи приватный ключ:
 
-    kubectl get secret <tls-secret> -n <namespace> -o jsonpath='{.type}{"\\n"}'
-    kubectl get secret <tls-secret> -n <namespace> -o jsonpath='{.data.tls\\.crt}' | base64 -d | openssl x509 -noout -subject -issuer -dates
+    kubectl get secret <tls-secret> -n <namespace> -o jsonpath='{.type}'
+    kubectl get secret <tls-secret> -n <namespace> -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -subject -issuer -dates
 
 Команда читает только сертификат, но не ключ. Не публикуй её вывод, если в нём есть внутренние домены или иные чувствительные сведения.
 
