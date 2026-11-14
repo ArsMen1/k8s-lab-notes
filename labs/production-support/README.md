@@ -163,6 +163,55 @@
 
 ---
 
+---
+
+## 7. Запрос к API Server возвращает Forbidden
+
+**Симптом:** kubectl или приложение получает HTTP 403 Forbidden. Аутентификация могла пройти успешно; отказ относится к авторизации или admission policy.
+
+**Диагностика**
+
+    kubectl auth whoami
+    kubectl auth can-i get pods -n <namespace>
+    kubectl auth can-i list secrets -n <namespace>
+    kubectl get serviceaccount,role,rolebinding -n <namespace>
+    kubectl get clusterrole,clusterrolebinding
+    kubectl describe rolebinding <binding> -n <namespace>
+
+Если проверяешь права конкретного ServiceAccount и у тебя есть право impersonation:
+
+    kubectl auth can-i get configmaps -n <namespace> --as=system:serviceaccount:<namespace>:<service-account>
+
+Проверь identity из ошибки, namespace, verb, resource, resource name и API group. Role действует в одном namespace; ClusterRole может быть связан на уровне namespace через RoleBinding или на уровне кластера через ClusterRoleBinding. Убедись, что приложение использует ожидаемый ServiceAccount.
+
+**Типичные root cause:** отсутствующий/неверный RoleBinding, binding с неправильным subject namespace/name, недостаточный verb/resource/API group, запрос к ресурсу в другом namespace или admission webhook, возвращающий отказ.
+
+**Безопасное исправление:** не выдавай cluster-admin и не добавляй wildcard permissions «чтобы заработало». Запроси минимальные verbs/resources в нужном scope и согласуй изменение с владельцем RBAC.
+
+**Проверка:** kubectl auth can-i возвращает yes для требуемых операций, приложение выполняет только нужные действия, лишние права не выданы.
+
+---
+
+## 8. NetworkPolicy блокирует трафик или DNS
+
+**Симптом:** Pod и Service Ready, но соединение зависает/timeout после включения NetworkPolicy или изменения сетевой политики.
+
+**Диагностика**
+
+    kubectl get networkpolicy -A
+    kubectl describe networkpolicy <policy> -n <namespace>
+    kubectl get pods -n <namespace> --show-labels
+    kubectl get endpointslices -n <namespace>
+    kubectl get pods -n kube-system -o wide
+
+Проверь, поддерживает ли установленный CNI enforcement NetworkPolicy. Политики суммируются: для соединения source Pod должен разрешать egress, а destination Pod — ingress. Default-deny egress также блокирует DNS, если отдельно не разрешить запросы к DNS Service/Pods по UDP и TCP 53. Сверь podSelector, namespaceSelector и labels namespace.
+
+**Типичные root cause:** policy selector выбрал не те Pod, отсутствует разрешающее правило на одной из сторон, DNS egress не разрешён, CNI не поддерживает enforcement или dataplane не здоров.
+
+**Безопасное исправление:** добавь узкое правило только для нужного source/destination, namespace и port. Не удаляй default-deny и не разрешай весь трафик как обходной путь.
+
+**Проверка:** тест из исходного namespace проходит к целевому Service; неразрешённые направления остаются заблокированными; DNS резолвится.
+
 ## Шаблон RCA
 
 1. **Impact:** какие пользователи/операции затронуты?
