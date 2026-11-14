@@ -1,16 +1,59 @@
-# Планирование в Kubernetes: Taints, Tolerations и Affinity
+# Планирование Pod: requests, taints, affinity и topology
 
-По умолчанию `kube-scheduler` ищет любую ноду, где хватает ресурсов, и ставит туда под. Но в проде нам часто нужно управлять этим процессом вручную (например, "поставь базу данных только на ноды с SSD").
+kube-scheduler выбирает Node для Pod, который ещё не назначен на узел. Сначала применяются фильтры допустимости (resources, taints, affinity, volume topology и другие ограничения), затем scheduler оценивает подходящие Node по scoring rules. Если подходящих узлов нет, Pod остаётся Pending; точную причину нужно читать в Events.
 
-## 1. Taints (Загрязнения) и Tolerations (Терпимости)
-*(Будет дополнено)*
-- **Taint**: Свойство ноды, которое "отталкивает" поды.
-- **Toleration**: Свойство пода, которое позволяет ему игнорировать Taint на ноде.
-*Применение:* Выделение мастер-нод (чтобы туда не ставились обычные приложения) или нод с GPU.
+## 1. Requests и доступная ёмкость
 
-## 2. Node Affinity (Сродство с нодой)
-*(Будет дополнено)*
-- Более гибкий механизм, чем `nodeSelector`. Позволяет задавать правила: "Я хочу, чтобы этот под жил на ноде с меткой `disk=ssd`, но если таких нет — запусти на обычной (soft affinity)".
+Scheduler учитывает resource requests, а не фактическое текущее потребление и не limits. Для планирования сравниваются requests Pod с allocatable capacity Node за вычетом уже зарезервированных requests других Pod.
 
-## Связанные заметки:
-* Как работает Scheduler: [[what-is-kubernetes]]
+    kubectl describe pod <pod> -n <namespace>
+    kubectl describe node <node>
+    kubectl top nodes
+    kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
+
+kubectl top показывает текущие метрики и не заменяет requests/allocatable при анализе решения scheduler.
+
+## 2. Taints и tolerations
+
+- **Taint** задаётся на Node и ограничивает размещение Pod.
+- **Toleration** в Pod разрешает ему размещаться на Node с соответствующим taint, но сама по себе не заставляет scheduler выбрать эту Node.
+- Основные эффекты: NoSchedule (не размещать новые Pod), PreferNoSchedule (стараться избегать), NoExecute (не размещать и может выселять уже работающие Pod без подходящей toleration).
+
+Проверки:
+
+    kubectl describe node <node>
+    kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
+
+Не добавляй toleration вслепую: taint может быть защитой control-plane или выделенного node pool.
+
+## 3. Node selector и affinity
+
+- **nodeSelector** — простой набор обязательных label=value условий.
+- **requiredDuringSchedulingIgnoredDuringExecution** — обязательное правило node affinity; если подходящей Node нет, Pod останется Pending.
+- **preferredDuringSchedulingIgnoredDuringExecution** — предпочтение при scoring, а не гарантия.
+- **podAffinity/podAntiAffinity** — правила относительно других Pod.
+- **topologySpreadConstraints** — распределение Pod по зонам/узлам/другим topology domains.
+
+Сначала проверь labels узлов, затем сравни их с условиями Pod:
+
+    kubectl get nodes --show-labels
+    kubectl get pod <pod> -n <namespace> -o yaml
+
+## 4. Диагностический алгоритм для Pending
+
+1. Выполни describe Pod и прочитай все FailedScheduling Events.
+2. Проверь requests и allocatable capacity.
+3. Проверь nodeSelector, required affinity и topology spread.
+4. Проверь taints и tolerations.
+5. Если Pod использует PVC — проверь PVC, StorageClass и volume node affinity.
+6. Проверь ResourceQuota/LimitRange в namespace.
+
+Не уменьшай requests и не удаляй Pod только потому, что он Pending. Сначала установи конкретное ограничение и проверь, не приведёт ли изменение к деградации приложения.
+
+## Связанные заметки
+
+- [Что такое Kubernetes](../00-overview/what-is-kubernetes.md)
+- [kubectl debugging](../05-operations/kubectl-debug.md)
+- [Production Support practicum](../../labs/production-support/README.md)
+- [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+- [Pod topology spread constraints](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/)
