@@ -1,0 +1,25 @@
+# Single-node disposable-cluster example only.
+# Create this directory on the selected node before applying:
+# /mnt/data/k8s-lab-pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: lab-p0-local-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: lab-local-manual
+  local:
+    path: /mnt/data/k8s-lab-pv
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - REPLACE_WITH_NODE_NAME
