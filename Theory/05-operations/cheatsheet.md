@@ -9,8 +9,8 @@
 * `kubectl get pods -n production` — поды в конкретном namespace.
 * `kubectl get pods -o wide` — + IP-адрес и имя ноды.
 * `kubectl get pods -w` — "смотреть" в реальном времени (как `tail -f`). Полезно, когда ждешь запуска пода.
-* `kubectl get all` — посмотреть сразу поды, сервисы, деплойменты.
-* `kubectl get events --sort-by='.lastTimestamp'` — **золотая команда**. Показывает хронологию всех событий в кластере (ошибки создания, нехватку ресурсов и т.д.).
+* `kubectl get all` — краткий обзор части основных ресурсов (Pods, Services, Deployments и др.); это не буквально все типы ресурсов и не включает, например, Secrets/PVC по умолчанию.
+* `kubectl get events -A --sort-by='.metadata.creationTimestamp'` — события всех namespace, отсортированные по времени создания объекта Event. Это полезный срез, но не полноценная история инцидента: сверяй timestamps и метрики системы мониторинга.
 
 ## 🕵️ Диагностика (Describe & Logs)
 Это твой главный инструмент, когда что-то сломалось.
@@ -23,7 +23,7 @@
 ## ⚙️ Управление (Apply & Delete)
 
 * `kubectl apply -f file.yaml` — применить манифест (создать или обновить).
-* `kubectl apply -f Manifests/payments-api/` — применить один сервис. Каталог `Manifests/` целиком не применяй: там лежат сломанные `incidents/`.
+* Для каталога приложения сначала создай namespace, затем применяй каталог: `kubectl apply -f Manifests/payments-api/namespace.yaml && kubectl apply -f Manifests/payments-api/`. Не полагайся на порядок файлов в директории. Каталог `Manifests/` целиком не применяй: там лежат сломанные `incidents/`.
 * `kubectl delete -f file.yaml` — удалить ресурс, описанный в файле.
 * `kubectl delete pod <имя-пода>` — удалить под вручную.
 
