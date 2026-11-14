@@ -13,12 +13,21 @@
 
 Если термины ниже плывут, не геройствуй: вернись в заметку по ссылке и потом снова в кластер.
 
-Общий сброс, когда надоело жить в последствиях:
+Очистка лаборатории — только в отдельном учебном кластере. Не удаляй namespace целиком: в нём могут находиться чужие объекты. Сначала проверь, что перечисленные имена принадлежат только этой лаборатории, затем удали только её ресурсы:
 
 ```bash
-kubectl delete ns incidents payments platform lab --ignore-not-found
+kubectl config current-context
+kubectl get deploy,svc,configmap,secret -n incidents
+kubectl delete deploy shop-front receipts ledger menu payouts checkout -n incidents --ignore-not-found
+kubectl delete svc shop-front menu -n incidents --ignore-not-found
+kubectl delete deploy payments-api -n payments --ignore-not-found
+kubectl delete svc payments-api payments-api-nodeport -n payments --ignore-not-found
+kubectl delete configmap payments-api -n payments --ignore-not-found
+kubectl delete secret payments-api -n payments --ignore-not-found
 kubectl delete svc checkout -n default --ignore-not-found
 ```
+
+Команды удаляют только перечисленные объекты, но всё равно проверь контекст и namespace перед запуском. Не выполняй очистку в production.
 
 ---
 
@@ -28,7 +37,7 @@ kubectl delete svc checkout -n default --ignore-not-found
 
 > NodePort `shop-front` молчит. Алина говорит, что касса открывается, а оплата нет. Кирилл поставил реакцию «глаза» и ушёл дописывать дизайн-док.
 
-Снаружи это `Connection refused` на порту **30081**. Внутри кластера сервис тоже никуда не ведёт.
+Запросы к NodePort **30081** не доходят до приложения. Точный внешний симптом зависит от сетевой реализации учебного кластера; ключевая улика — у Service нет готовых endpoints из-за несовпадающего selector.
 
 Перед кластером, если слова «селектор» и «Endpoints» ещё не свои: [[labels-and-selectors]] · [[why-service]] · [[where-are-endpoints-stored]] · [[network-traffic-path]] · [[kubectl-debug]]
 
