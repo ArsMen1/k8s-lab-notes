@@ -1,123 +1,129 @@
+# Обновление Kubernetes-кластера (Cluster Upgrade)
 
-# Обновление кластера Kubernetes (Cluster Upgrade)
+Обновление Kubernetes — управляемая операция с предварительной проверкой совместимости, резервным копированием и поэтапным обновлением control plane и worker nodes. Само по себе обновление не гарантирует Zero Downtime: доступность зависит от реплик, readiness probes, PDB, topology spread, capacity и приложения.
 
-Обновление Kubernetes в продакшене — это поэтапный процесс без остановки работы приложений (Zero-Downtime). Главная особенность: **нельзя перепрыгивать через минорные версии** (например, с `1.29` сразу на `1.31` — только `1.29 -> 1.30 -> 1.31`).
+## 1. Version Skew: что проверить
 
----
+Правила совместимости зависят от версии Kubernetes. Перед обновлением сверяйся с официальной Version Skew Policy для целевой версии.
 
-## 📏 Правило совместимости версий (Version Skew Policy)
+Основные ориентиры для современных поддерживаемых версий:
 
-Kubernetes строго регламентирует разницу версий между компонентами во время обновления:
-* **`kube-apiserver`** — всегда самый новый компонент в кластере (эталон версии `X.Y`).
-* **`kube-controller-manager`, `kube-scheduler`** — могут отставать от API-сервера максимум на **1 минорную версию** (`X.Y-1`).
-* **`kubelet` (на ворк-нодах)** — может отставать от API-сервера максимум на **3 минорные версии** (`X.Y-3`), но не может быть новее него.
-* **`kubectl`** — может отличаться на **1 минорную версию** в обе стороны (`X.Y+1` или `X.Y-1`).
+- kubelet не должен быть новее kube-apiserver и имеет ограничение на число minor-версий отставания; для актуальной политики начиная с Kubernetes 1.28 это до 3 minor versions.
+- kubectl поддерживает версию API Server в пределах одной minor-версии старше или младше.
+- kube-controller-manager и kube-scheduler должны соответствовать правилам skew относительно kube-apiserver; при HA обновляются последовательно.
+- kubeadm сначала обновляют до целевой minor-версии, затем выполняют upgrade plan/apply.
 
-> 💡 **Золотой порядок обновления:** Сначала Control Plane (начиная с `kube-apiserver`), затем по очереди Worker-ноды.
+Не воспринимай «API Server всегда самый новый» как разрешение смешивать любые версии: допустимые сочетания определяются официальной таблицей для конкретного релиза.
 
----
+## 2. Подготовка
 
-## 🛠️ Алгоритм обновления Self-Hosted кластера (`kubeadm`)
+До начала работ:
 
-### Шаг 0: Подготовка и страховка (Обязательно!)
-1. **Проверить Release Notes:** Убедиться, что в новой версии не удалили API, которые используют ваши манифесты (например, переход с `extensions/v1beta1` на `apps/v1` или изменение версий `Ingress`).
-2. **Сделать бэкап `etcd`:** Если при обновлении что-то сломается, откат `kubeadm` не поддерживается — восстанавливаться придется из снепшота `etcd`.
+1. Определи текущую и целевую версии, проверь поддерживаемый путь обновления. Обычно переход выполняется по одному minor-релизу за раз.
+2. Прочитай release notes и проверь удалённые/изменённые API через инструменты вроде `kubent` или `pluto`.
+3. Проверь здоровье control plane, etcd, нод и критичных workloads.
+4. Проверь capacity для пересоздания Pod, PDB, anti-affinity/topology spread и локальные тома.
+5. Сделай etcd snapshot и проверь процедуру восстановления.
+6. Согласуй maintenance window и план отката. Для kubeadm нет универсального безопасного downgrade одной командой.
 
----
+## 3. Обновление control plane через kubeadm (пример Debian/Ubuntu)
 
-### Шаг 1: Обновление первой Master-ноды (Control Plane)
+Команды ниже — схема для перехода на конкретную поддерживаемую версию; замени `1.xx.x` на точный доступный patch release и используй репозиторий Kubernetes, настроенный по официальной инструкции для этой ветки.
 
-1. **Обновить пакет `kubeadm`:**
-   ```bash
-   sudo apt-mark unhold kubeadm && \
-   sudo apt-get update && sudo apt-get install -y kubeadm='1.31.x-*' && \
-   sudo apt-mark hold kubeadm
-   ```
-2. **Проверить план обновления:** `kubeadm` проверит состояние кластера и покажет, какие компоненты и до каких версий будут обновлены.
-   ```bash
-   sudo kubeadm upgrade plan
-   ```
-3. **Применить обновление Control Plane:** Эта команда обновит статические манифесты (`apiserver`, `scheduler`, `controller-manager`, `etcd`) и продлит сертификаты на 1 год.
-   ```bash
-   sudo kubeadm upgrade apply v1.31.0
-   ```
-4. **Вывести мастер-ноду из-под нагрузки (`drain`)** и обновить `kubelet` + `kubectl`:
-   ```bash
-   kubectl drain master-node --ignore-daemonsets
-   
-   sudo apt-mark unhold kubelet kubectl && \
-   sudo apt-get update && sudo apt-get install -y kubelet='1.31.x-*' kubectl='1.31.x-*' && \
-   sudo apt-mark hold kubelet kubectl
-   
-   sudo systemctl daemon-reload
-   sudo systemctl restart kubelet
-   
-   kubectl uncordon master-node
-   ```
-*(Если мастер-нод несколько (HA), на остальных запускается `sudo kubeadm upgrade node` вместо `apply`)*.
+На первой control-plane ноде:
 
----
+```bash
+sudo apt-mark unhold kubeadm
+sudo apt-get update
+sudo apt-get install -y kubeadm='1.xx.x-*'
+sudo apt-mark hold kubeadm
 
-### Шаг 2: Поочередное обновление Worker-нод
-
-Ворк-ноды обновляются **строго по одной**, чтобы приложения не потеряли доступность (соблюдаем `PodDisruptionBudget`).
-
-1. **Эвакуировать поды с ноды (с Control Plane):**
-   Команда `drain` запрещает планировщику ставить новые поды на ноду (`SchedulingDisabled`) и корректно выселяет текущие (они пересоздадутся на других нодах).
-   ```bash
-   kubectl drain worker-1 --ignore-daemonsets --delete-emptydir-data
-   ```
-2. **На самой `worker-1` обновить `kubeadm` и конфигурацию узла:**
-   ```bash
-   sudo apt-mark unhold kubeadm && \
-   sudo apt-get update && sudo apt-get install -y kubeadm='1.31.x-*' && \
-   sudo apt-mark hold kubeadm
-   
-   sudo kubeadm upgrade node
-   ```
-3. **Обновить `kubelet` и `kubectl` на `worker-1`:**
-   ```bash
-   sudo apt-mark unhold kubelet kubectl && \
-   sudo apt-get update && sudo apt-get install -y kubelet='1.31.x-*' kubectl='1.31.x-*' && \
-   sudo apt-mark hold kubelet kubectl
-   
-   sudo systemctl daemon-reload
-   sudo systemctl restart kubelet
-   ```
-4. **Вернуть ноду в строй (с Control Plane):**
-   ```bash
-   kubectl uncordon worker-1
-   ```
-
----
-
-## ☁️ Как происходит обновление в Managed K8s (EKS / GKE / Yandex)
-
-В облаках процесс делится на два независимых этапа:
-
-1. **Control Plane:** Обновляется в 1 клик (или через Terraform). Облако само меняет версии API-серверов под капотом без даунтайма.
-2. **Worker Nodes (Node Groups):** Обычно используется стратегия **Blue/Green (Surge Upgrade)**:
-   * Облако создает новые виртуальные машины уже с новой версией `kubelet`.
-   * Старые ноды переводятся в статус `drain`, поды плавно переезжают на новые ноды.
-   * После полного переезда старые виртуальные машины удаляются.
-
----
-
-## 👀 Что увидел в кластере
-
-Во время выполнения `kubectl drain worker-1` статус ноды в выводе `kubectl get nodes` временно меняется на `Ready,SchedulingDisabled`:
-
-```text
-NAME          STATUS                     ROLES           AGE   VERSION
-master-node   Ready                      control-plane   10d   v1.31.0
-worker-1      Ready,SchedulingDisabled   <none>          10d   v1.30.4
-worker-2      Ready                      <none>          10d   v1.30.4
+sudo kubeadm version
+sudo kubeadm upgrade plan
+sudo kubeadm upgrade apply v1.xx.x
 ```
-После выполнения `kubectl uncordon worker-1` статус возвращается в `Ready`, а версия обновляется до `v1.31.0`.
 
----
+Затем обнови kubelet и kubectl на этой ноде:
+
+```bash
+kubectl drain <control-plane-node> --ignore-daemonsets
+sudo apt-mark unhold kubelet kubectl
+sudo apt-get update
+sudo apt-get install -y kubelet='1.xx.x-*' kubectl='1.xx.x-*'
+sudo apt-mark hold kubelet kubectl
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon <control-plane-node>
+```
+
+В single-control-plane кластере drain временно лишает кластер доступного control plane для обычных API операций. Планируй это как обслуживание, а не как zero-downtime процедуру. Static Pods control plane не выселяются как обычные workload Pods.
+
+Для дополнительных control-plane узлов используй предусмотренную kubeadm процедуру `kubeadm upgrade node`, обновляй узлы по одному и соблюдай HA quorum/доступность API. Не запускай `upgrade apply` на каждой ноде.
+
+## 4. Обновление worker nodes по одной
+
+С control plane:
+
+```bash
+kubectl drain <worker-node> --ignore-daemonsets
+```
+
+На worker node обнови kubeadm:
+
+```bash
+sudo apt-mark unhold kubeadm
+sudo apt-get update
+sudo apt-get install -y kubeadm='1.xx.x-*'
+sudo apt-mark hold kubeadm
+sudo kubeadm upgrade node
+```
+
+Затем обнови kubelet и kubectl (если kubectl установлен на worker):
+
+```bash
+sudo apt-mark unhold kubelet kubectl
+sudo apt-get update
+sudo apt-get install -y kubelet='1.xx.x-*' kubectl='1.xx.x-*'
+sudo apt-mark hold kubelet kubectl
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+```
+
+Верни ноду в scheduling:
+
+```bash
+kubectl uncordon <worker-node>
+kubectl get nodes -o wide
+```
+
+Перед переходом к следующей ноде дождись Ready и проверь workloads. Если drain заблокирован PDB — выясни, почему нельзя безопасно выселить Pod; не обходи eviction protection автоматически.
+
+## 5. Managed Kubernetes
+
+В managed-сервисах провайдер обычно управляет control plane, а worker node pools обновляются отдельно. Конкретные стратегии различаются: in-place, surge, blue/green или замена node pool. Не предполагай, что каждый провайдер использует один и тот же механизм.
+
+Проверь:
+- совместимость версии control plane и node pools;
+- поддерживаемые версии CNI, CSI, CoreDNS и других add-ons;
+- доступную capacity и лимиты IP;
+- PDB и autoscaler;
+- план замены/отката node pool.
+
+## 6. Проверки после обновления
+
+```bash
+kubectl get nodes -o wide
+kubectl get pods -A
+kubectl get events -A --sort-by=.metadata.creationTimestamp
+kubectl get --raw='/readyz?verbose'
+```
+
+Проверь состояние критичных приложений, ingress, DNS, storage, CNI и мониторинга. Сверь версии kubelet, API Server и add-ons с целевым baseline.
 
 ## Связанные заметки
-* Поднятие кластера через kubeadm: [[kubeadm-bootstrap]]
-* Managed K8s vs Self-Hosted: [[managed-vs-self-hosted]]
-* Как безопасно выселять поды (PDB): [[pod-disruption-budget]]
+
+- [[kubeadm-bootstrap]]
+- [[managed-vs-self-hosted]]
+- [[pod-disruption-budget]]
+- [[health-probes]]
+- [[rolling-update]]
