@@ -14,8 +14,12 @@
 Практика:
 
 ```bash
+kubectl apply -f Manifests/payments-api/namespace.yaml
 kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
+kubectl apply -f Manifests/echo/namespace.yaml
+kubectl apply -f Manifests/echo/
 kubectl -n payments get deploy,rs,pods,svc
 kubectl -n payments get endpointslices
 ```
@@ -43,7 +47,7 @@ kubectl -n payments get endpointslices
 5. [[spring-config-server]] — внешний Config Server и его отличие от Kubernetes ConfigMap.
 6. [[scheduling-taints-affinity]] — scheduler, taints, tolerations и affinity.
 
-Далее обязательно закрыть: PV/PVC/StorageClass, StatefulSet, Job/CronJob, ResourceQuota/LimitRange, RBAC, NetworkPolicy и HPA.
+После networking/configuration переходи к связанному P0-треку: [Storage](../09-storage/README.md), [StatefulSet](../10-statefulset/README.md), [RBAC](../11-rbac/README.md), [Resources/QoS](../12-resources-qos/README.md), [DNS/CoreDNS](../13-dns-coredns/README.md), [NetworkPolicy](../14-networkpolicy/README.md). Практика: [P0 labs](../../labs/fundamentals-p0/README.md). Затем изучи [HPA](../15-hpa/README.md), [Observability](../16-observability/README.md) и [P1 labs](../../labs/fundamentals-p1/README.md).
 
 ## Этап 3 — CRD и Operators
 
@@ -74,11 +78,11 @@ kubectl -n payments get endpointslices
 
 После основного маршрута добавляй отдельными практическими блоками:
 
-- Storage: PV/PVC, CSI, attach/mount failures, filesystem full.
-- Security: RBAC, ServiceAccount, authentication/authorization, NetworkPolicy, Pod Security.
-- Observability: metrics, logs, events, traces, Prometheus/Grafana, alerting.
-- Scheduling: requests/limits, QoS, eviction, node pressure, affinity.
-- Networking: CoreDNS, CNI, kube-proxy/eBPF, Ingress, TLS/certificates.
+- Storage и stateful workloads: [PV/PVC/CSI](../09-storage/README.md), [StatefulSet](../10-statefulset/README.md), attach/mount failures, filesystem full.
+- Security: [RBAC](../11-rbac/README.md), ServiceAccount, authentication/authorization, [NetworkPolicy](../14-networkpolicy/README.md), Pod Security.
+- Observability: [metrics, logs, traces, Prometheus/Grafana и alerting](../16-observability/README.md).
+- Scheduling: [requests/limits, QoS, eviction](../12-resources-qos/README.md), node pressure, affinity.
+- Networking: [CoreDNS](../13-dns-coredns/README.md), CNI, kube-proxy/eBPF, [Ingress/TLS](../02-networking/ingress-and-loadbalancer.md).
 - Delivery: Helm, Kustomize, GitOps/Argo CD, rollout failures.
 - Reliability: PDB, HPA, autoscaling nodes, backup/restore, disaster recovery.
 
