@@ -11,4 +11,4 @@
     kubectl apply -f Manifests/networkpolicy/allow-frontend-egress.yaml
     kubectl apply -f Manifests/networkpolicy/default-deny.yaml
 
-Default deny блокирует egress, поэтому DNS allow обязателен. Если CoreDNS labels не совпадают с selector, DNS не заработает. Не расширяй policy до allow-all.
+Default deny блокирует egress только для Pods с label app.kubernetes.io/part-of=networkpolicy-lab, поэтому DNS allow обязателен. Если CoreDNS labels не совпадают с selector, DNS не заработает. Не расширяй policy до allow-all.
