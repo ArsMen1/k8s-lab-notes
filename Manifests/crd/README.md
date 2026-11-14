@@ -1,110 +1,88 @@
-
 # Kubernetes CRD Lab
 
-Практические манифесты для изучения CustomResourceDefinitions и Custom Resources.
+Практика для изучения CustomResourceDefinitions (CRD), Custom Resources (CR), схемы, валидации и версий API.
 
 ## Структура
 
-| Directory | Description |
+| Каталог | Что изучаем |
 |---|---|
-| 01-first-crd | Создание первого CRD и Custom Resource |
-| 02-custom-resource | Создание нескольких Custom Resources |
-| 03-schema-validation | OpenAPI Schema, Defaulting и CEL |
-| 04-multiple-versions | Несколько версий API |
-| 05-conversion-webhook | Conversion Webhook |
+| `01-first-crd/` | Регистрация CRD и создание первого Custom Resource |
+| `02-custom-resource/` | Создание нескольких CR одного типа |
+| `03-schema-validation/` | OpenAPI Schema, defaulting и CEL validation |
+| `04-multiple-versions/` | Объявление нескольких API versions и storage version |
+| `05-conversion-webhook/` | Пока только план лаборатории: webhook-сервис и конфигурация ещё не реализованы |
 
 ## Требования
 
-- Kubernetes cluster.
-- kubectl.
-- Права на создание CustomResourceDefinitions.
+- Доступный Kubernetes-кластер с поддержкой CRD.
+- `kubectl` с контекстом нужного кластера.
+- Права на создание и изменение CustomResourceDefinitions.
+- Для этапа 05 дополнительно потребуются HTTPS webhook service, сертификаты и доступность webhook из API Server.
 
 ## Порядок выполнения
 
 ### 01. First CRD
 
-Регистрация нового API:
-
 ```bash
 kubectl apply -f 01-first-crd/database-crd.yaml
-```
-
-Проверка:
-
-```bash
-kubectl wait \
-  --for=condition=Established \
-  crd/databases.lab.example.com \
-  --timeout=60s
-```
-
-Создание Database:
-
-```bash
+kubectl wait --for=condition=Established crd/databases.lab.example.com --timeout=60s
 kubectl apply -f 01-first-crd/database.yaml
-```
-
-Проверка:
-
-```bash
 kubectl get databases
 kubectl describe database payments-db
 ```
 
-### 02. Custom Resource
-
-Создание второго объекта:
+### 02. Несколько Custom Resources
 
 ```bash
 kubectl apply -f 02-custom-resource/database.yaml
+kubectl get databases
+kubectl get databases -A
 ```
 
-Проверка:
+### 03. Schema, defaulting и CEL
 
-```bash
-kubectl get db
-```
-
-### 03. Schema Validation
-
-Сначала обновляем CRD:
+Обнови CRD схемой из следующего этапа:
 
 ```bash
 kubectl apply -f 03-schema-validation/database-crd.yaml
-```
-
-Создаём корректный объект:
-
-```bash
 kubectl apply -f 03-schema-validation/valid-database.yaml
-```
-
-Проверяем:
-
-```bash
 kubectl get database valid-database -o yaml
 ```
 
-Пробуем некорректный:
+Затем проверь ожидаемый отказ:
 
 ```bash
 kubectl apply -f 03-schema-validation/invalid-database.yaml
 ```
 
-Ожидаемый результат: Kubernetes отклоняет ресурс.
+Ожидается отказ: `engine=mongodb` не входит в enum, `replicas=0` меньше минимума, а minReplicas больше maxReplicas.
 
-## Важное предупреждение
+Проверь defaulting, применив объект без `spec.version`, затем прочитай сохранённый объект через `kubectl get -o yaml`.
 
-Не применяй все YAML из каталога одной командой.
-
-Некоторые манифесты предназначены для отдельных этапов обучения.
-
-Удаление CRD может привести к удалению всех Custom Resources этого типа.
-
-Перед удалением CRD проверь, какие объекты существуют:
+### 04. Multiple versions
 
 ```bash
-kubectl get databases --all-namespaces
+kubectl apply -f 04-multiple-versions/database-crd.yaml
+kubectl get crd databases.lab.example.com -o yaml
+kubectl get --raw /apis/lab.example.com/v1
+kubectl get --raw /apis/lab.example.com/v2
 ```
 
-Не удаляй CRD в рабочем кластере без понимания последствий.
+На этом этапе схемы v1 и v2 намеренно одинаковы. Это демонстрация нескольких served versions, а не полноценная миграция данных. Storage version — ровно одна версия с `storage: true`.
+
+### 05. Conversion webhook — не запускать
+
+Лаборатория пока не реализована. Для неё нужно добавить webhook-сервер, Service, TLS-сертификаты, CA bundle в CRD и тест, который доказывает реальное преобразование между несовместимыми v1 и v2. Пустой файл не является рабочей лабораторной.
+
+## Безопасность
+
+Не применяй все YAML из каталога одной командой: этапы изменяют одно и то же CRD. Выполняй их последовательно в отдельном учебном кластере.
+
+Удаление CRD может удалить все Custom Resources этого типа. Перед экспериментом проверь объекты:
+
+```bash
+kubectl get databases -A
+kubectl get crd databases.lab.example.com
+```
+
+Не используй эту лабораторию в production-кластере.
