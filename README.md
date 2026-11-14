@@ -9,8 +9,8 @@
 3. [P0 Fundamentals](labs/fundamentals-p0/README.md) — Storage, StatefulSet, RBAC, QoS, DNS и NetworkPolicy.
 4. [P1 labs](labs/fundamentals-p1/README.md) — Ingress/TLS, HPA и Observability.
 5. [Production Support практикум](labs/production-support/README.md) — диагностика типовых инцидентов.
-4. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
-5. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
+6. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
+7. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
 
 ## Структура
 
