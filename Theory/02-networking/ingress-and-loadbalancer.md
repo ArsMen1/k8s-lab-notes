@@ -53,7 +53,7 @@ Ingress и backend Service обычно находятся в одном namespa
 
 ## 5. Практика и следующие темы
 
-В репозитории пока нет полноценного Ingress Controller + TLS стенда. Диагностический сценарий есть в [Production Support практикуме](../../labs/production-support/README.md), но он не заменяет deployment controller и end-to-end проверку.
+End-to-end упражнение с backend, Service, Ingress и self-signed TLS находится в [Ingress manifests](../../Manifests/ingress/README.md), а порядок диагностики — в [P1 labs](../../labs/fundamentals-p1/README.md). Ingress Controller и IngressClass должны быть заранее установлены в тестовом кластере: универсальный controller manifest нельзя считать переносимым между всеми дистрибутивами.
 
 Следующие темы:
 - [Service types](service-types.md)
