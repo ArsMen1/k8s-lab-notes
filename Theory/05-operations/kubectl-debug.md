@@ -5,8 +5,8 @@
 ## 1. Что вообще создалось?
 
 ```bash
-kubectl get deploy,rs,pods,svc,EndpointSlice -o wide
-kubectl get events --sort-by=.lastTimestamp
+kubectl get deploy,rs,pods,svc,endpointslices -o wide
+kubectl get events -A --sort-by=.metadata.creationTimestamp
 ```
 
 Смотри статусы подов: `Pending`, `ContainerCreating`, `CrashLoopBackOff`, `ImagePullBackOff`, `Running`.
