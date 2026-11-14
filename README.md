@@ -8,10 +8,12 @@
 2. [Первая неделя инцидентов](labs/incidents.md) — сначала расследуй, затем открывай разборы в `labs/debrief/`.
 3. [P0 Fundamentals](labs/fundamentals-p0/README.md) — Storage, StatefulSet, RBAC, QoS, DNS и NetworkPolicy.
 4. [P1 labs](labs/fundamentals-p1/README.md) — Ingress/TLS, HPA и Observability.
-5. [Production Support практикум](labs/production-support/README.md) — диагностика типовых инцидентов.
-6. [Отдельные troubleshooting labs](labs/troubleshooting/README.md) — Node NotReady, DiskPressure, FailedMount, ImagePullBackOff.
-7. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
-8. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
+5. [Identity & Access Management](Theory/17-identity-access/README.md) — LDAP, Active Directory, OIDC, Dex, Keycloak и Kubernetes RBAC.
+6. [Production Support практикум](labs/production-support/README.md) — диагностика типовых инцидентов.
+7. [Отдельные troubleshooting labs](labs/troubleshooting/README.md) — Node NotReady, DiskPressure, FailedMount, ImagePullBackOff.
+8. [Лаборатория Identity & Access](labs/identity-access/README.md) — 401, 403, LDAP и OIDC troubleshooting.
+9. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
+10. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
 
 ## Структура
 
@@ -26,6 +28,7 @@
 - `Theory/08-cluster-admin/` — kubeadm, архитектура кластеров и обновления.
 - `Theory/09-storage/` … `14-networkpolicy/` — Storage, StatefulSet, RBAC, QoS, DNS/CoreDNS и NetworkPolicy.
 - `Theory/15-hpa/` и `16-observability/` — autoscaling и мониторинг.
+- `Theory/17-identity-access/` — LDAP, Active Directory, OIDC, Dex, Keycloak и интеграция с Kubernetes.
 - `Manifests/` — учебные рабочие и намеренно сломанные Kubernetes-манифесты.
 - `labs/` — проверка знаний, сценарии инцидентов, разборы и Production Support runbooks.
 
@@ -62,4 +65,4 @@ kubectl apply -f Manifests/payments-api/service-nodeport.yaml
 1. Одна тема — одна заметка; связи между заметками оформляй wiki-ссылками.
 2. В конце практической заметки фиксируй, что именно увидел в кластере.
 3. В git храни манифесты и безопасные примеры. Не коммить реальные пароли, kubeconfig, приватные ключи и дампы.
-4. Перед применением незнакомого каталога сначала читай его README.
+4. Перед применением незнакомого каталога сначала читай README конкретного упражнения.
