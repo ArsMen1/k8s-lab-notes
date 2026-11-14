@@ -1,0 +1,45 @@
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: iam-openldap
+    environment:
+      LDAP_ORGANISATION: "Example Lab"
+      LDAP_DOMAIN: "example.org"
+      LDAP_BASE_DN: "dc=example,dc=org"
+      LDAP_ADMIN_PASSWORD: "${LDAP_ADMIN_PASSWORD:?Copy .env.example to .env and set a local password}"
+      LDAP_CONFIG_PASSWORD: "${LDAP_CONFIG_PASSWORD:?Set LDAP_CONFIG_PASSWORD in .env}"
+      LDAP_TLS: "false"
+    ports:
+      - "127.0.0.1:1389:389"
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+      - ./ldap/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/10-bootstrap.ldif:ro
+    networks:
+      - iam
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.5
+    container_name: iam-keycloak
+    command: ["start-dev", "--http-port=8080"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KEYCLOAK_ADMIN:?Set KEYCLOAK_ADMIN in .env}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - openldap
+    networks:
+      - iam
+    restart: unless-stopped
+
+volumes:
+  ldap_data:
+  ldap_config:
+
+networks:
+  iam:
+    driver: bridge
