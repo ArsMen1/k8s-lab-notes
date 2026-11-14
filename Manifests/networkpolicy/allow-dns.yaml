@@ -4,7 +4,9 @@ metadata:
   name: allow-dns
   namespace: lab-p0
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: networkpolicy-lab
   policyTypes:
     - Egress
   egress:
