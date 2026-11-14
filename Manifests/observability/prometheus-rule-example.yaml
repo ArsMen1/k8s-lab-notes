@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: lab-target-health
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: lab-target-health.rules
+      rules:
+        - alert: ScrapeTargetDown
+          expr: up == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Prometheus scrape target is down"
+            description: "A configured scrape target has been unavailable for at least five minutes. Check target labels, endpoint health, network policy and service discovery."
