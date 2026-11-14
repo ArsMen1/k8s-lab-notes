@@ -29,7 +29,7 @@
 | P1 | Observability | [Теория](16-observability/README.md) · [Runbook](../Manifests/observability/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
 | P0 | Troubleshooting | [Production Support](../labs/production-support/README.md) · [P0 fundamentals](../labs/fundamentals-p0/README.md) |
 
-P0 означает, что материалы и базовые лаборатории добавлены, но их ещё нужно пройти в тестовом кластере. P1 означает, что материалы будут дополняться полноценной практикой; Ingress controller, metrics-server и Prometheus stack зависят от окружения и не должны считаться установленными этим репозиторием.
+P0 означает, что теория, примеры манифестов и базовые лаборатории добавлены; их ещё нужно пройти в тестовом кластере. Для P1 добавлены theory, manifests/runbooks и лаборатории; Ingress Controller, metrics-server и Prometheus/Grafana stack остаются внешними prerequisites и не устанавливаются этим репозиторием автоматически. Ни один из этих стендов не считается runtime-проверенным.
 
 ## Как пользоваться
 
