@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web
-  namespace: lab-p1
+  namespace: lab-p1-hpa
 spec:
   replicas: 1
   selector:
