@@ -68,7 +68,7 @@ kubectl get --raw /apis/lab.example.com/v1
 kubectl get --raw /apis/lab.example.com/v2
 ```
 
-На этом этапе схемы v1 и v2 намеренно одинаковы. Это демонстрация нескольких served versions, а не полноценная миграция данных. Storage version — ровно одна версия с `storage: true`.
+На этом этапе схемы v1 и v2 намеренно одинаковы. Это демонстрация нескольких served versions, а не полноценная миграция данных. Storage version — ровно одна версия с `storage: true`. Переключение `storage: true` не означает, что все ранее сохранённые объекты автоматически переписаны в etcd в новой storage version. Для реальной миграции изучи Storage Version Migration и проверяй `status.storedVersions`; не удаляй старую версию, пока данные не мигрированы и версия не перестала использоваться.
 
 ### 05. Conversion webhook — не запускать
 
