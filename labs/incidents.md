@@ -99,6 +99,7 @@ kubectl -n incidents describe pod -l app.kubernetes.io/name=ledger
 Это единственный день с прелюдией. Сначала в namespace `payments` должна жить нормальная версия, иначе откатывать будет некуда.
 
 ```bash
+kubectl apply -f Manifests/payments-api/namespace.yaml
 kubectl apply -f Manifests/payments-api/
 kubectl -n payments rollout status deploy/payments-api
 ```
