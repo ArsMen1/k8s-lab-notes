@@ -25,6 +25,12 @@ Kubernetes обычно использует short-lived projected ServiceAccoun
 
 Для logs и exec нужны subresources pods/log и pods/exec. Для deployments API group — apps, для ConfigMaps — core API group с пустым именем.
 
+## Пользовательская identity: authentication отдельно от RBAC
+
+Внешний пользователь обычно аутентифицируется не через ServiceAccount. Корпоративная учётная запись может находиться в LDAP/Active Directory, а Dex или Keycloak выступать OIDC provider. Kubernetes API Server проверяет OIDC ID token, получает username/groups, после чего RBAC применяет RoleBinding/ClusterRoleBinding.
+
+Подробный поток и диагностика: [Identity & Access Management](../17-identity-access/README.md). Важно: AD-группа не получает Kubernetes permissions автоматически — её имя должно корректно попасть в token claims и совпасть с subject в binding.
+
 ## Проверка и RCA Forbidden
 
     kubectl auth whoami
