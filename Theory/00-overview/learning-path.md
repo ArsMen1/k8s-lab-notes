@@ -1,19 +1,17 @@
 # Что и как изучать дальше
 
-Это учебный трек под этот репозиторий. Правило: **сначала заметка → потом `kubectl apply` → потом `describe`/`logs`/`endpoints`**. Не читай теорию пачками без практики.
+Это основной маршрут репозитория. Правило: **одна тема → объяснить своими словами → выполнить практику → проверить состояние → разобрать поломку**. Не считай прочитанную заметку освоенным навыком.
 
-## Уже пройденный фундамент (этап 0)
+## Этап 0 — фундамент
 
-Если эти темы понятны — можно идти дальше:
+1. [[what-is-kubernetes]] — назначение Kubernetes, control plane и worker nodes.
+2. [[glossary-core-objects]] — карта основных объектов.
+3. [[pod-vs-container]] и [[deployment-vs-replicaset]] — Pod, Deployment и ReplicaSet.
+4. [[why-service]], [[where-are-endpoints-stored]], [[service-types]] — Service и EndpointSlice.
+5. [[where-is-nginx-from]] — образы и container runtime.
+6. [[daemonset-explained]] — DaemonSet.
 
-1. [[what-is-kubernetes]] — декларативность, control plane / workers
-2. [[glossary-core-objects]] — карта объектов
-3. [[deployment-vs-replicaset]] — цепочка Deployment → RS → Pod
-4. [[why-service]] + [[where-are-endpoints-stored]]
-5. [[where-is-nginx-from]]
-6. [[daemonset-explained]]
-
-Практика этапа 0:
+Практика:
 
 ```bash
 kubectl apply -f Manifests/payments-api/
@@ -22,67 +20,77 @@ kubectl -n payments get deploy,rs,pods,svc
 kubectl -n payments get endpointslices
 ```
 
----
+Критерий: можешь объяснить путь от Deployment до работающего Pod и почему Service направляет трафик не на любой Pod, а на endpoints, подходящие под selector и readiness.
 
-## Этап 1 — связать объекты правильно (сейчас)
+## Этап 1 — диагностика и поведение workloads
 
-Цель: перестать воспринимать YAML как «магический скрипт».
+- [[labels-and-selectors]] — selectors и labels.
+- [[health-probes]] — startup, readiness и liveness probes.
+- [[rolling-update]] — rollout, history и rollback.
+- [[kubectl-debug]], [[cheatsheet]], [[how-kubectl-works]] — диагностика через API, events, describe и logs.
+- [[namespaces]] — область видимости ресурсов.
 
-| Тема             | Заметка                                                    | Практика                                               |
-| ---------------- | ---------------------------------------------------------- | ------------------------------------------------------ |
-| Labels/Selectors | [[labels-and-selectors]]                                   | сломай selector у Service и посмотри пустые Endpoints  |
-| Типы Service     | [[service-types]]                                          | `Manifests/payments-api/service.yaml` и `service-nodeport.yaml` |
-| Отладка          | [[kubectl-debug]] · [[cheatsheet]] · [[how-kubectl-works]] | доведи любой Broken-сценарий до причины через describe |
+Практика: пройди семь сценариев из [[incidents]] и запиши для каждого симптом, гипотезу, подтверждающую команду, root cause и проверку после исправления.
 
-Критерий «сдал этап»: можешь объяснить, почему Service не видит поды, без гугления.
+Критерий: не лечишь статус по названию; умеешь определить, на каком уровне отказ — scheduling, image pull, process, readiness, Service/DNS или конфигурация.
 
----
+## Этап 2 — networking и configuration
 
-## Этап 2 — поведение приложения в проде
+1. [[network-traffic-path]] — путь пакета через Pod, Service и node.
+2. [[ingress-and-loadbalancer]] — Ingress resource, Ingress Controller и внешний балансировщик.
+3. [[api-groups]] — apiVersion, API groups и discovery.
+4. [[configmap-and-secret]] и [[twelve-factor-app]] — конфигурация и секреты.
+5. [[spring-config-server]] — внешний Config Server и его отличие от Kubernetes ConfigMap.
+6. [[scheduling-taints-affinity]] — scheduler, taints, tolerations и affinity.
 
-| Тема | Заметка | Практика |
-|------|---------|----------|
-| Probes | [[health-probes]] | пробы в `Manifests/payments-api/deployment.yaml`, поломка — день 5 в `labs/incidents.md` |
-| Rolling update | [[rolling-update]] | день 4 в `labs/incidents.md` |
-| ConfigMap/Secret | [[configmap-and-secret]] | `Manifests/payments-api/configmap.yaml` и `secret.yaml` |
-| Namespaces | [[namespaces]] | `Manifests/echo/`, день 7 в `labs/incidents.md` |
+Далее обязательно закрыть: PV/PVC/StorageClass, StatefulSet, Job/CronJob, ResourceQuota/LimitRange, RBAC, NetworkPolicy и HPA.
 
-Критерий: умеешь обновить образ без даунтайма и откатить; понимаешь разницу Ready vs Running.
+## Этап 3 — CRD и Operators
 
----
+Отдельный углублённый трек: [[learning-path]] в каталоге CRD (если Obsidian разрешает неоднозначное имя, открой файл по пути `Theory/07-crd/learning-path.md`).
 
-## Этап 3 — дописать черновики и закрыть дыры
+Порядок:
+1. CRD и Custom Resource.
+2. OpenAPI schema, validation, defaulting и CEL.
+3. API versions, served/storage и conversion.
+4. Controllers, reconciliation, spec/status и finalizers.
+5. Operators, RBAC и Helm.
+6. Безопасное удаление CRD/CR и последствия для данных.
 
-Черновики уже лежат, в них ещё пустые секции:
+Практика: `Manifests/crd/README.md`. Каталоги выполняй строго по очереди в отдельном учебном кластере: они обновляют один и тот же CRD.
 
-1. [[ingress-and-loadbalancer]] — Ingress Controller отдельно от объекта Ingress.
-2. [[scheduling-taints-affinity]] — taints, tolerations, affinity на примерах.
-3. [[spring-config-server]] — чем Config Server отличается от ConfigMap.
+Критерий: понимаешь разницу между регистрацией типа (CRD), экземпляром (CR) и управляющей логикой (Controller/Operator).
 
-Дальше новых заметок ещё нет. Имеет смысл идти так:
+## Этап 4 — cluster administration
 
-1. ResourceQuota / LimitRange.
-2. PV / PVC / StorageClass.
-3. StatefulSet.
-4. Job / CronJob.
-5. RBAC.
-6. NetworkPolicy.
-7. HPA.
+1. [[managed-vs-self-hosted]] — разделение ответственности.
+2. [[kubeadm-bootstrap]] — bootstrap self-hosted кластера.
+3. [[pod-disruption-budget]] — добровольные disruptions и drain.
+4. [[cluster-upgrade]] — version skew и обновление control plane/worker nodes.
 
-Открытые вопросы без заметок: [[roadmap-questions]]. Helm и операторы — после этапов 1–2 и лаборатории.
+Критерий: можешь объяснить, какие компоненты и зависимости нужно проверить до обслуживания ноды или обновления кластера.
 
----
+## Прикладные темы для Production Support
 
-## Как заниматься каждый день (30–45 мин)
+После основного маршрута добавляй отдельными практическими блоками:
 
-1. Выбери **одну** тему из таблицы.
-2. Прочитай заметку.
-3. Примени манифест в Killercoda / minikube / kind.
-4. Либо сломай рабочий манифест сам, либо возьми день из [labs/incidents.md](../../labs/incidents.md).
-5. Восстанови по [[kubectl-debug]]. Разбор дня читай после своей версии.
-6. В конец заметки допиши 3–5 строк «что увидел своими глазами».
+- Storage: PV/PVC, CSI, attach/mount failures, filesystem full.
+- Security: RBAC, ServiceAccount, authentication/authorization, NetworkPolicy, Pod Security.
+- Observability: metrics, logs, events, traces, Prometheus/Grafana, alerting.
+- Scheduling: requests/limits, QoS, eviction, node pressure, affinity.
+- Networking: CoreDNS, CNI, kube-proxy/eBPF, Ingress, TLS/certificates.
+- Delivery: Helm, Kustomize, GitOps/Argo CD, rollout failures.
+- Reliability: PDB, HPA, autoscaling nodes, backup/restore, disaster recovery.
 
-## Связанные входные точки
+## Как заниматься за сессию (30–45 минут)
 
-- Карта терминов: [[glossary-core-objects]]
-- Введение: [[what-is-kubernetes]]
+1. Выбери одну небольшую тему.
+2. Прочитай заметку и сформулируй объяснение без подсказки.
+3. Выполни практику в Killercoda, minikube, kind или отдельном тестовом кластере.
+4. Проверь результат командами `get`, `describe`, `events`, `logs`, `get -o yaml`.
+5. Создай контролируемую неисправность и диагностируй её.
+6. Запиши 3–5 строк: симптом, причина, подтверждение, исправление, профилактика.
+
+## Открытые вопросы
+
+Список тем, которые ещё требуют отдельного исследования: [[roadmap-questions]].
