@@ -13,6 +13,7 @@
 
 - [P0 Fundamentals](fundamentals-p0/README.md) — Storage, StatefulSet, RBAC, QoS, DNS и NetworkPolicy.
 - [P1 labs](fundamentals-p1/README.md) — Ingress/TLS, HPA и Observability.
+- [Troubleshooting labs](troubleshooting/README.md) — Node NotReady, DiskPressure, FailedMount и ImagePullBackOff.
 
 ## Следующий уровень
 
