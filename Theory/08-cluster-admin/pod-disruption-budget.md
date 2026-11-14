@@ -14,7 +14,7 @@ spec:
   minAvailable: 2
   selector:
     matchLabels:
-      app: payments-api
+      app.kubernetes.io/name: payments-api
 ```
 
 Селектор должен совпадать с labels Pod, создаваемых Deployment. Проверь фактические labels до применения:
