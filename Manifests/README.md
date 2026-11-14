@@ -12,13 +12,20 @@
 | `config-server/` | Spring Cloud Config Server и его ClusterIP |
 | `echo/` | крошечный сервис в namespace `lab`, чтобы потрогать DNS между namespace |
 
-Порядок файлов внутри каталога не важен. Каталог целиком:
+Перед применением каталога сначала создай namespace отдельной командой. `kubectl apply -f <каталог>/` не гарантирует, что Namespace будет обработан раньше остальных файлов: например, `configmap.yaml` сортируется раньше `namespace.yaml`.
 
 ```bash
+kubectl apply -f Manifests/payments-api/namespace.yaml
 kubectl apply -f Manifests/payments-api/
+
+kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
+
+kubectl apply -f Manifests/echo/namespace.yaml
 kubectl apply -f Manifests/echo/
 ```
+
+Повторное применение `namespace.yaml` внутри каталога безопасно для этого примера, поскольку оно декларативно задаёт тот же объект. Для собственных каталогов сохраняй явный bootstrap namespace перед namespaced-ресурсами.
 
 `payments-api/service-nodeport.yaml` — только для учебного кластера без Ingress. В проде снаружи ходят через Ingress или облачный LoadBalancer.
 
