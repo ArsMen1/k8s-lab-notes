@@ -8,4 +8,4 @@
     kubectl apply -f Manifests/hpa/hpa.yaml
     kubectl get hpa -n lab-p1 -w
 
-Проверь metrics API: kubectl get apiservices | grep metrics и kubectl top pods -n lab-p1. Нагрузку генерируй только в disposable кластере, HPA меняет replicas.
+Проверь metrics API: kubectl get apiservices | grep metrics и kubectl top pods -n lab-p1. Для генерации нагрузки в disposable кластере: kubectl apply -f Manifests/hpa/load-generator.yaml. После теста удали только этот Pod: kubectl delete pod load-generator -n lab-p1. Нагрузка увеличивает CPU и HPA меняет replicas; не запускай на shared/production кластере.
