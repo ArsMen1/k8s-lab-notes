@@ -1,37 +1,31 @@
 # K8s Lab Notes
 
-Конспект Kubernetes и лаборатория поломок. Теория объясняет, из чего кластер собран. Манифесты показывают, как это лежит в git. Лаборатория проверяет, можешь ли ты по симптомам дойти до причины.
+Конспект Kubernetes и лаборатория диагностики. Теория объясняет устройство кластера, манифесты показывают декларативное состояние, а Labs учит расследовать неисправности по симптомам.
 
-## Как зайти
+## С чего начать
 
-1. [Проверка уровня](labs/00-level-check.md) — семь вопросов. Ответов рядом нет. Если завис, там ссылка на нужную заметку.
-2. [Первая неделя в «Сдаче»](labs/incidents.md) — семь инцидентов. Сначала кластер, потом разбор в `labs/debrief/`.
-3. Теорию целиком, если хочется карты, а не пожара: [`Theory/00-overview/learning-path.md`](Theory/00-overview/learning-path.md).
+1. [Проверка уровня](labs/00-level-check.md).
+2. [Первая неделя инцидентов](labs/incidents.md) — сначала расследуй, затем открывай разборы в `labs/debrief/`.
+3. [Основной маршрут обучения](Theory/00-overview/learning-path.md).
+4. Если интересует конкретная тема — смотри [карту теории](Theory/README.md).
 
 ## Структура
 
-```text
-Theory/                 заметки, по трекам
-  00-overview/          что такое кластер, глоссарий, трек, открытые вопросы
-  01-workloads/         Pod, Deployment, DaemonSet, пробы, rollout
-  02-networking/        Service, Endpoints, путь пакета, Ingress
-  03-scheduling/        taints, tolerations, affinity
-  04-config/            ConfigMap, Secret, 12 факторов, Spring Config
-  05-operations/        kubectl, образы, порядок apply
-  06-organization/      namespace и labels
-Manifests/              желаемое состояние, один kind на файл
-  payments-api/         рабочий сервис
-  config-server/        config server
-  echo/                 сервис в отдельном namespace
-  incidents/            специально сломанные сценарии 01–07
-labs/                   уровень, история инцидентов, разборы отдельно
-```
-
-Карта каталога манифестов: [`Manifests/README.md`](Manifests/README.md).
+- `Theory/00-overview/` — основы, карта обучения и открытые вопросы.
+- `Theory/01-workloads/` — Pod, Deployment, DaemonSet, probes и rollout.
+- `Theory/02-networking/` — Service, EndpointSlice, Ingress, API groups.
+- `Theory/03-scheduling/` — scheduler, taints, tolerations и affinity.
+- `Theory/04-config/` — ConfigMap, Secret, 12-factor и Spring Config.
+- `Theory/05-operations/` — kubectl, диагностика и порядок применения манифестов.
+- `Theory/06-organization/` — Namespace, labels, selectors и annotations.
+- `Theory/07-crd/` — CRD, Custom Resources, schema, versioning, controllers и operators.
+- `Theory/08-cluster-admin/` — kubeadm, архитектура кластеров и обновления.
+- `Manifests/` — учебные рабочие и намеренно сломанные Kubernetes-манифесты.
+- `labs/` — проверка знаний, сценарии инцидентов и отдельные разборы.
 
 ## Быстрый старт
 
-Нужен любой кластер: Killercoda, minikube, kind.
+Нужен учебный кластер: Killercoda, minikube или kind.
 
 ```bash
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
@@ -44,7 +38,7 @@ kubectl apply -f Manifests/echo/
 kubectl -n payments get deploy,rs,pods,svc
 ```
 
-`kubectl apply -f Manifests/` целиком не запускай. Внутри `incidents/` лежат поломки, их применяют по номеру дня из истории.
+Не применяй `Manifests/` целиком: внутри есть намеренно сломанные сценарии и отдельные лаборатории CRD. Применяй только каталог текущего упражнения и соблюдай порядок из его README.
 
 Снаружи учебный NodePort:
 
@@ -52,10 +46,11 @@ kubectl -n payments get deploy,rs,pods,svc
 kubectl apply -f Manifests/payments-api/service-nodeport.yaml
 ```
 
-Порт 30080. В проде этого файла нет, снаружи ходят через Ingress или балансировщик.
+Порт 30080. Это учебный способ доступа, а не универсальная рекомендация для production.
 
-## Как вести конспект
+## Правила репозитория
 
-1. Одна тема — одна заметка, ссылки между ними через `[[wiki-links]]`.
-2. В конце заметки — несколько строк, что увидел в кластере.
-3. В git только желаемое состояние. Endpoints, статусы подов и настоящие пароли не коммитят.
+1. Одна тема — одна заметка; связи между заметками оформляй wiki-ссылками.
+2. В конце практической заметки фиксируй, что именно увидел в кластере.
+3. В git храни манифесты и безопасные примеры. Не коммить реальные пароли, kubeconfig, приватные ключи и дампы.
+4. Перед применением незнакомого каталога сначала читай его README.
