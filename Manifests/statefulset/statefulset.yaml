@@ -18,7 +18,7 @@ spec:
         - name: nginx
           image: nginx:1.27
           command: ["/bin/sh", "-c"]
-          args: ["echo persistent-data > /usr/share/nginx/html/data/identity.txt; exec nginx -g 'daemon off;'"]
+          args: ["if [ ! -f /usr/share/nginx/html/data/identity.txt ]; then echo created-on-first-start > /usr/share/nginx/html/data/identity.txt; fi; echo $HOSTNAME >> /usr/share/nginx/html/data/starts.log; exec nginx -g 'daemon off;'"]
           ports:
             - name: http
               containerPort: 80
