@@ -1,71 +1,94 @@
 # API Groups в Kubernetes (`apiVersion`)
 
-Когда ты смотришь на YAML-манифест, одна из первых строк — это `apiVersion`. Она указывает Kubernetes, к какому «разделу» API относится ресурс. 
+Поле `apiVersion` указывает версию Kubernetes API, через которую представлен ресурс. Обычно оно имеет вид `<group>/<version>`, но у ресурсов **Core API group** группа пустая, поэтому значение выглядит просто как `v1`.
 
-В Kubernetes `apiVersion` всегда состоит из двух частей, разделенных слешем: `<group>/<version>`. 
-*   **Group (Группа)** — логическое объединение ресурсов.
-*   **Version (Версия)** — версия API внутри этой группы (например, `v1`, `v1beta1`).
+Примеры:
 
-## 🏗️ Зачем нужны API Groups?
+| apiVersion | API group | Примеры ресурсов |
+|---|---|---|
+| `v1` | Core group (пустая группа) | Pod, Service, ConfigMap, Secret, Namespace |
+| `apps/v1` | `apps` | Deployment, ReplicaSet, StatefulSet, DaemonSet |
+| `batch/v1` | `batch` | Job, CronJob |
+| `networking.k8s.io/v1` | `networking.k8s.io` | Ingress, NetworkPolicy |
+| `apiextensions.k8s.io/v1` | `apiextensions.k8s.io` | CustomResourceDefinition |
 
-Kubernetes — расширяемая система. API Groups нужны для того, чтобы:
-1.  **Избежать конфликтов имен**: Твой кастомный ресурс `Deployment` не пересечется со встроенным `Deployment` из группы `apps`.
-2.  **Логически сгруппировать ресурсы**: Базовые ресурсы (`Pod`, `Service`) лежат в Core Group. Ресурсы для работы с сетью — в `networking.k8s.io`, для батч-задач — в `batch`.
-3.  **Управлять версиями**: Можно спокойно развивать API, переводя ресурсы из `v1alpha1` в `v1beta1`, а затем в стабильный `v1`.
+## Зачем нужны API Groups
 
-## 🗂️ Виды групп
+1. Группируют ресурсы по назначению.
+2. Позволяют развивать разные API независимо.
+3. Разделяют имена ресурсов в разных группах и версиях.
 
-1.  **Core Group (Ядро)**: Самые базовые ресурсы. В манифестах у них просто `apiVersion: v1` (без слеша).
-    *   *Примеры:* `Pod`, `Service`, `ConfigMap`, `Secret`, `Namespace`.
-2.  **Named Groups (Именованные)**: Ресурсы, сгруппированные по функциональности.
-    *   *Примеры:* `apps/v1` (Deployment, StatefulSet), `batch/v1` (Job, CronJob), `networking.k8s.io/v1` (Ingress).
-3.  **Custom Groups (Кастомные)**: То, что создают разработчики или сторонние операторы (CRD).
+Версия API — это версия контракта, а не обязательно версия Kubernetes или приложения. Например, `apps/v1` остаётся версией API Deployment независимо от версии образа приложения.
 
-## 🔍 Разбор `apiVersion: lab.example.com/v1`
+## Как читать apiVersion кастомного ресурса
 
-Если ты видишь такой `apiVersion`, это значит, что перед тобой **кастомный ресурс**, созданный через `CustomResourceDefinition` (CRD).
+```yaml
+apiVersion: lab.example.com/v1
+kind: Database
+```
 
-*   **`lab.example.com`** — это **API Group**. По соглашению здесь используется доменное имя (FQDN), которым владеет организация (чтобы группа была уникальной во всем мире). Если ты работаешь в компании `mycompany.com`, ты можешь создать группу `apps.mycompany.com` или `lab.mycompany.com`.
-*   **`v1`** — это **Version** (версия API).
+Здесь `lab.example.com` — API group, а `v1` — версия ресурса. В нашем учебном примере группа зарегистрирована через CRD `databases.lab.example.com`.
 
-### 🛠️ Как это создается (CRD)
-За этим `apiVersion` стоит объект `CustomResourceDefinition`. Когда администратор кластера применяет манифест CRD:
+Упрощённый CRD:
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: myresources.lab.example.com # <plural>.<group>
+  name: myresources.lab.example.com
 spec:
-  group: lab.example.com  # 👈 Наша группа
-  versions:
-    - name: v1            # 👈 Наша версия
-      served: true
-      storage: true
+  group: lab.example.com
   scope: Namespaced
   names:
     plural: myresources
     singular: myresource
     kind: MyResource
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
 ```
 
-Происходит следующее:
-1.  Kubernetes API Server регистрирует новый эндпоинт по пути: `/apis/lab.example.com/v1/namespaces/<namespace>/myresources`.
-2.  Теперь ты можешь создавать объекты с `apiVersion: lab.example.com/v1` и `kind: MyResource`.
-3.  `kubectl` при виде такого `apiVersion` понимает, что нужно обратиться к этому кастомному эндпоинту, а не к встроенному API.
+После регистрации CRD API Server предоставляет endpoint группы и версии. Для namespaced-ресурса путь имеет вид:
 
-## 💡 Как это выглядит в реальной жизни (На примере Prometheus)
+`/apis/lab.example.com/v1/namespaces/<namespace>/myresources`
 
-Когда ты устанавливаешь Prometheus Operator, он создает свою кастомную группу API. И тогда ты начинаешь использовать манифесты вида:
-```yaml
-apiVersion: monitoring.coreos.com/v1  # 👈 Кастомная группа от оператора
-kind: ServiceMonitor
+Для core group используются пути под `/api/v1`, а для именованных групп — под `/apis/<group>/<version>`.
+
+## Связь с kubectl
+
+`kubectl` использует discovery API сервера, чтобы узнать доступные ресурсы, их группы, версии и scope. Само поле `apiVersion` в YAML не «создаёт» ресурс: соответствующий API должен уже существовать в кластере.
+
+Проверки:
+
+```bash
+kubectl api-versions
+kubectl api-resources
+kubectl explain deployment
+kubectl explain database --api-version=lab.example.com/v1
 ```
-Если этого оператора в кластере нет, `kubectl apply` выдаст ошибку: `no matches for kind "ServiceMonitor" in version "monitoring.coreos.com/v1"`. Это значит, что CRD для этой группы не установлен.
 
-## 📌 Итог для практики:
-Если в чужом манифесте или туториале ты видишь `apiVersion` с доменом (например, `cert-manager.io/v1`), это значит, что перед применением файла в кластере должен быть установлен соответствующий оператор (CRD).
+Если появляется ошибка `no matches for kind`, проверь:
 
-## 🔗 Связанные заметки:
-* Базовые объекты: [[glossary-core-objects]]
-* Как kubectl работает с API: [[how-kubectl-works]]
+1. Установлен ли нужный CRD (если это Custom Resource).
+2. Доступна ли указанная версия (`served: true`).
+3. Правильно ли написаны `apiVersion` и `kind`.
+4. Не обращаешься ли ты к кластеру с неправильным kube-context.
+
+Важно: CRD не равен Operator. CRD регистрирует тип ресурса; controller/operator — отдельная программа, которая может наблюдать за такими объектами и выполнять действия.
+
+## Пример из реального инструментария
+
+`monitoring.coreos.com/v1` и `kind: ServiceMonitor` — API, который обычно устанавливает Prometheus Operator или отдельный пакет его CRD. Наличие CRD позволяет API Server принимать объект, но без работающего контроллера объект сам по себе не настроит Prometheus.
+
+## Связанные заметки
+
+- [[01-what-is-crd]]
+- [[how-kubectl-works]]
+- [[glossary-core-objects]]
