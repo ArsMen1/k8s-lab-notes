@@ -26,3 +26,4 @@ Kubernetes (K8s) — это платформа для оркестрации к�
 * Откуда берутся образы: [[where-is-nginx-from]]
 * Порядок применения манифестов: [[order-of-manifests]]
 * Как дебажить: [[kubectl-debug]]
+* Анотации: [[annotations-explained]]
