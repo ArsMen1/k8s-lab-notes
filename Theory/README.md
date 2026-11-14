@@ -10,7 +10,7 @@
 | `03-scheduling` | Scheduler, taints, tolerations, affinity |
 | `04-config` | ConfigMap, Secret, двенадцатифакторное приложение, Spring Config Server |
 | `05-operations` | kubectl, диагностика, образы и порядок применения манифестов |
-| `06-organization` | Namespace, labels, selectors, [annotations](06-organization/annotations-explained.md) |
+| `06-organization` | Namespace, labels, selectors, [annotations](06-organization/annotations-explained.md), [certificates](06-organization/certificates-in-k8s.md), [cert-manager](06-organization/cert-manager-explained.md), [rotation](06-organization/certificate-rotation.md) |
 | `07-crd` | CRD и CR, OpenAPI Schema, validation/defaulting, API lifecycle, controllers, operators, Helm |
 | `08-cluster-admin` | kubeadm bootstrap, managed vs self-hosted, cluster upgrade, PDB |
 
