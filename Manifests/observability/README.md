@@ -13,4 +13,4 @@ Prometheus/Grafana stack не vendored в репозитории: CRDs, values �
     kubectl get prometheusrules -A
     kubectl get events -n monitoring --sort-by=.metadata.creationTimestamp
 
-CRD-команды работают только при установленном Prometheus Operator. Официально: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+Пример PrometheusRule находится в prometheus-rule-example.yaml. Он требует CRD PrometheusRule и Prometheus Operator; label release должен совпадать с ruleSelector установленного chart. Выражение up == 0 иллюстрирует scrape health, но не заменяет сервисные RED alerts. Официально: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
