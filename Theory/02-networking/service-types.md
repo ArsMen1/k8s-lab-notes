@@ -1,6 +1,6 @@
 # Типы Service: ClusterIP, NodePort, LoadBalancer
 
-Service всегда дает стабильный виртуальный IP и DNS. Меняется только **откуда** до него можно достучаться.
+Обычный Service типа ClusterIP/NodePort/LoadBalancer получает стабильный виртуальный IP и DNS-имя. Исключения: headless Service (`clusterIP: None`) не получает ClusterIP, а ExternalName возвращает DNS CNAME. Меняется и способ доступа, и поведение DNS.
 
 ## ClusterIP (по умолчанию)
 
