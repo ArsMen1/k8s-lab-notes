@@ -74,12 +74,24 @@ kubectl -n payments get endpointslices
 
 Критерий: можешь объяснить, какие компоненты и зависимости нужно проверить до обслуживания ноды или обновления кластера.
 
+## Этап 5 — Identity & Access Management
+
+Изучай после RBAC: сначала научись понимать Kubernetes authorization, затем добавляй внешнюю identity и SSO.
+
+1. [LDAP и Active Directory](../17-identity-access/ldap-active-directory.md) — каталоги, DN, bind, search, группы, LDAPS и Kerberos.
+2. [OIDC и Kubernetes](../17-identity-access/oidc-kubernetes.md) — ID token, issuer, audience, claims, kubeconfig exec plugin и RBAC group mapping.
+3. [Dex и Keycloak](../17-identity-access/dex-keycloak.md) — identity broker/provider, LDAP federation, clients, realms и protocol mappers.
+4. [Общая схема](../17-identity-access/README.md) — полный flow от kubectl до RBAC.
+5. [Диагностическая лаборатория](../../labs/identity-access/README.md) — отличай 401 от 403 и локализуй сбой по слоям.
+
+Критерий: можешь проследить путь пользователя от корпоративной AD-группы до Kubernetes RoleBinding и объяснить, почему успешный SSO login сам по себе не даёт доступ к API.
+
 ## Прикладные темы для Production Support
 
 После основного маршрута добавляй отдельными практическими блоками:
 
 - Storage и stateful workloads: [PV/PVC/CSI](../09-storage/README.md), [StatefulSet](../10-statefulset/README.md), attach/mount failures, filesystem full.
-- Security: [RBAC](../11-rbac/README.md), ServiceAccount, authentication/authorization, [NetworkPolicy](../14-networkpolicy/README.md), Pod Security.
+- Security: [RBAC](../11-rbac/README.md), [Identity & Access Management](../17-identity-access/README.md), ServiceAccount, [NetworkPolicy](../14-networkpolicy/README.md), Pod Security.
 - Observability: [metrics, logs, traces, Prometheus/Grafana и alerting](../16-observability/README.md).
 - Scheduling: [requests/limits, QoS, eviction](../12-resources-qos/README.md), node pressure, affinity.
 - Networking: [CoreDNS](../13-dns-coredns/README.md), CNI, kube-proxy/eBPF, [Ingress/TLS](../02-networking/ingress-and-loadbalancer.md).
