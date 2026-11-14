@@ -14,24 +14,22 @@
 | `07-crd` | CRD и CR, OpenAPI Schema, validation/defaulting, API lifecycle, controllers, operators, Helm |
 | `08-cluster-admin` | kubeadm bootstrap, managed vs self-hosted, cluster upgrade, PDB |
 
-## Что ещё нужно закрыть
+## Статус учебных треков
 
-Наличие темы в оглавлении не означает, что она уже изучена: сейчас это пробелы теории и/или практики, а не готовые треки.
-
-| Приоритет | Тема | Что конкретно добавить |
+| Приоритет | Тема | Материалы |
 |---|---|---|
-| P0 | Storage: PV/PVC/StorageClass/CSI | Жизненный цикл claim, binding, access modes, reclaim policy, volume expansion, CSI и диагностика Pending/FailedMount |
-| P0 | StatefulSet | Headless Service, stable identity, volumeClaimTemplates, rollout/scale и сохранность данных |
-| P0 | RBAC и ServiceAccounts | Role/ClusterRole, bindings, least privilege, impersonation и проверка через kubectl auth can-i |
-| P0 | Resources/QoS/Eviction | requests vs limits, QoS classes, OOMKilled, MemoryPressure/DiskPressure, ephemeral storage |
-| P0 | DNS/CoreDNS и NetworkPolicy | Service discovery, DNS debugging, ingress/egress isolation и поддержка NetworkPolicy со стороны CNI |
-| P1 | Ingress/TLS | Полный рабочий пример networking.k8s.io/v1, IngressClass, controller, backend endpoints, TLS Secret и диагностика 404/502 |
-| P1 | Scheduling глубже | requests/allocatable, topology spread, PriorityClass/preemption, PVC topology и причины Pending |
-| P1 | HPA/metrics | autoscaling/v2, metrics-server, CPU requests, scaling behavior, limits и диагностика unknown |
-| P1 | Observability | Metrics/logs/traces, Prometheus/Grafana, alerting, RED/USE и связь сигналов с RCA |
-| P2 | GitOps и упаковка | Helm, Kustomize, Argo CD, безопасные promotion/rollback практики |
+| P0 | Storage: PV/PVC/StorageClass/CSI | [Теория](09-storage/README.md) · [Манифесты](../Manifests/storage/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | StatefulSet | [Теория](10-statefulset/README.md) · [Манифесты](../Manifests/statefulset/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | RBAC и ServiceAccounts | [Теория](11-rbac/README.md) · [Манифесты](../Manifests/rbac/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | Resources/QoS/Eviction | [Теория](12-resources-qos/README.md) · [Манифесты](../Manifests/resources/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | DNS/CoreDNS | [Теория](13-dns-coredns/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | NetworkPolicy | [Теория](14-networkpolicy/README.md) · [Манифесты](../Manifests/networkpolicy/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P1 | Ingress/TLS | [Теория](02-networking/ingress-and-loadbalancer.md) · [Манифесты](../Manifests/ingress/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
+| P1 | HPA/metrics | [Теория](15-hpa/README.md) · [Манифесты](../Manifests/hpa/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
+| P1 | Observability | [Теория](16-observability/README.md) · [Runbook](../Manifests/observability/README.md) · [Лаборатории](../labs/fundamentals-p1/README.md) |
+| P0 | Troubleshooting | [Production Support](../labs/production-support/README.md) · [P0 fundamentals](../labs/fundamentals-p0/README.md) |
 
-Практический трек для части инцидентов уже добавлен: [Production Support practicum](../labs/production-support/README.md). Он не заменяет недостающие теоретические заметки и манифесты.
+P0 означает, что материалы и базовые лаборатории добавлены, но их ещё нужно пройти в тестовом кластере. P1 означает, что материалы будут дополняться полноценной практикой; Ingress controller, metrics-server и Prometheus stack зависят от окружения и не должны считаться установленными этим репозиторием.
 
 ## Как пользоваться
 
