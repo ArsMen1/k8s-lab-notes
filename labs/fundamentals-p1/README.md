@@ -12,8 +12,8 @@
 
     kubectl get ingressclass
     kubectl get ingress -A -o wide
-    kubectl describe ingress web -n lab-p1
-    kubectl get svc,endpointslices -n lab-p1
+    kubectl describe ingress web -n lab-p1-ingress
+    kubectl get svc,endpointslices -n lab-p1-ingress
     kubectl get pods -A | grep -i ingress
 
 404: Host/path/class/controller rules. 502/503: backend Service/port, ready endpoints, app listen port и controller logs. TLS error: Secret namespace/type, SAN, expiry и certificate-key pair.
@@ -30,11 +30,11 @@
 
 Диагностика:
 
-    kubectl get hpa web -n lab-p1
-    kubectl describe hpa web -n lab-p1
-    kubectl top pods -n lab-p1
+    kubectl get hpa web -n lab-p1-ingress
+    kubectl describe hpa web -n lab-p1-ingress
+    kubectl top pods -n lab-p1-ingress
     kubectl get apiservices | grep metrics
-    kubectl get deployment web -n lab-p1 -o yaml
+    kubectl get deployment web -n lab-p1-ingress -o yaml
 
 Проверь metrics-server, CPU requests, selector, targetRef, readiness и наличие метрик.
 
