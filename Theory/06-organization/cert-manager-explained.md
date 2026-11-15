@@ -75,7 +75,7 @@ spec:
     solvers:
     - http01:
         ingress:
-          class: nginx
+          ingressClassName: nginx
 ---
 # 2. Заказываем сертификат для нашего домена
 apiVersion: cert-manager.io/v1
@@ -91,6 +91,10 @@ spec:
   dnsNames:
   - myapp.example.com
 ```
+
+Для HTTP-01 solver `ingressClassName` — рекомендуемое поле (добавлено в cert-manager 1.12). Поле `class` оставлено для совместимости с контроллерами вроде ingress-gce, которые не поддерживают `spec.ingressClassName`. Имя класса должно существовать в кластере.
+
+Официально: [HTTP-01 solver](https://cert-manager.io/docs/configuration/acme/http01/).
 
 ## 🔗 Связанные заметки:
 * Как сертификаты попадают в под: [[certificates-in-k8s]]
