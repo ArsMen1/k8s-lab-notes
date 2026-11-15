@@ -91,7 +91,7 @@ curl.exe --fail --show-error --cacert certs/rootCA.pem https://sso.iam.test:8443
 1. В **Clients** создай client с Client ID `kubernetes`, protocol `OpenID Connect`.
 2. Отключи **Client authentication** (public client), включи **Standard flow**. Direct access grants, implicit flow и service accounts для этого упражнения не нужны.
 3. В настройках клиента установи Proof Key for Code Exchange (PKCE) method `S256`, если поле доступно в текущей версии.
-4. В **Valid redirect URIs** добавь точные loopback callbacks `http://localhost:8000` и `http://localhost:18000`. Это локальные адреса kubelogin на твоём компьютере, не публичные redirect URI. Web origins для этого server-side redirect flow можно оставить пустыми.
+4. В **Valid redirect URIs** добавь loopback callbacks `http://localhost:8000`, `http://localhost:8000/*`, `http://localhost:18000` и `http://localhost:18000/*`. Это локальные адреса kubelogin на твоём компьютере, не публичные redirect URI; wildcard ограничен localhost и двумя callback ports. Web origins для этого server-side redirect flow можно оставить пустыми.
 5. Убедись, что client использует стандартный scope `profile`: он добавляет `preferred_username` в ID token. Если claim отсутствует, проверь effective client scopes и mapper `username` → `preferred_username`.
 6. Открой dedicated client scope клиента `kubernetes`, затем **Mappers → Add mapper → By configuration → Group Membership**.
 7. Настрой mapper: Name `groups`, Token Claim Name `groups`, Full group path `OFF`, Add to ID token `ON`. Add to access token можно включить для диагностики, но Kubernetes будет использовать ID token.
@@ -273,5 +273,7 @@ kind delete cluster --name iam-oidc-lab
 - [kind configuration: extraMounts and kubeadmConfigPatches](https://kind.sigs.k8s.io/docs/user/configuration/)
 - [kind releases and compatible node images](https://github.com/kubernetes-sigs/kind/releases)
 - [Keycloak Server Administration Guide](https://www.keycloak.org/docs/latest/server_admin/)
+- [Keycloak hostname v2](https://www.keycloak.org/server/hostname)
+- [Keycloak reverse proxy](https://www.keycloak.org/server/reverseproxy.html)
 - [Keycloak protocol mappers](https://www.keycloak.org/admin-api/protocol-mappers)
 - [kubelogin usage and authentication flows](https://github.com/int128/kubelogin/blob/master/docs/usage.md)
