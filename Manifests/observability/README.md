@@ -2,7 +2,14 @@
 
 Prometheus/Grafana stack не vendored в репозитории: CRDs, values и совместимость зависят от Helm chart/operator и Kubernetes version. Не применяй случайные manifests из интернета к рабочему кластеру.
 
-Для disposable кластера выбери и зафиксируй версию kube-prometheus-stack chart по официальной документации проекта. До установки проверь CRDs, namespace, Node capacity и совместимость версии. Helm install изменяет кластер и выполняется только в тестовой среде.
+Для disposable кластера выбери и зафиксируй версию kube-prometheus-stack chart по официальной документации проекта. Установи release в namespace `monitoring` (так настроены примеры ниже); если выбираешь другой namespace или release name, согласованно измени namespace и label `release` в тестовых ресурсах.
+
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    helm search repo prometheus-community/kube-prometheus-stack --versions
+    helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack --version <chart-version> --namespace monitoring --create-namespace --wait
+
+До установки проверь CRDs, namespace, Node capacity и совместимость версии. Helm install/upgrade изменяет кластер и выполняется только в тестовой среде.
 
 После установки проверь Prometheus targets/scrape errors, Grafana datasource, Alertmanager routes/receivers, exporters, retention/storage, RBAC и NetworkPolicy monitoring namespace.
 
@@ -29,7 +36,7 @@ Prometheus/Grafana stack не vendored в репозитории: CRDs, values �
     kubectl apply -f Manifests/observability/alert-lab.yaml
     kubectl get prometheusrules -n monitoring
 
-Найди Prometheus Service через `kubectl get svc -n monitoring`, затем выполни port-forward на его web port и проверь `/alerts` или запрос `ALERTS{alertname="K8sLabSyntheticAlert"}`. Если rule не появился, проверь CRD, `ruleSelector`, `ruleNamespaceSelector`, labels и логи Prometheus Operator. Alertmanager notification не гарантируется: route/receiver могут фильтровать severity warning, поэтому сначала проверь состояние rule в Prometheus.
+Найди Prometheus Service через `kubectl get svc -n monitoring`, затем выполни `kubectl port-forward -n monitoring svc/<prometheus-service> 9090:9090` и проверь `http://localhost:9090/alerts` или запрос `ALERTS{alertname="K8sLabSyntheticAlert"}`. Если rule не появился, проверь CRD, `ruleSelector`, `ruleNamespaceSelector`, labels и логи Prometheus Operator. Alertmanager notification не гарантируется: route/receiver могут фильтровать severity warning, поэтому сначала проверь состояние rule в Prometheus.
 
 После проверки удали только тестовый rule:
 

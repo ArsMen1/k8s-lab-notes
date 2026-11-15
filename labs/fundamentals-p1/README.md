@@ -48,7 +48,7 @@
 
 Симптом: alert о росте latency/errors либо saturation.
 
-Выполни [synthetic alert lab](../../Manifests/observability/README.md#synthetic-alert-lab) в disposable-кластере. Создай тестовое правило `K8sLabSyntheticAlert` с `vector(1)`, дождись Firing в Prometheus, найди его в Alertmanager и удали только тестовый PrometheusRule. Если правило не появляется, проверь CRD, Prometheus `ruleSelector` / `ruleNamespaceSelector`, label `release`, namespace и логи Operator.
+Выполни [synthetic alert lab](../../Manifests/observability/README.md#synthetic-alert-lab) в disposable-кластере с kube-prometheus-stack, установленным в namespace `monitoring`. Создай тестовое правило `K8sLabSyntheticAlert` с `vector(1)`, дождись Firing в Prometheus, проверь alert в Alertmanager и удали только тестовый PrometheusRule. Если правило не появляется, проверь CRD, Prometheus `ruleSelector` / `ruleNamespaceSelector`, label `release`, namespace и логи Operator.
 
 После проверки проведи incident triage: выбери временное окно, сравни RED (rate/errors/duration) с USE (utilization/saturation/errors), проверь Prometheus target health, scrape gaps, dashboard time range, logs и trace IDs. Root cause нельзя выводить из одного графика: раздели impact по service/namespace/node/zone, сопоставь с change timeline и подтверди гипотезу независимым сигналом.
 
