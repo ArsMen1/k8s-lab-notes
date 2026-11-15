@@ -1,0 +1,4 @@
+sso.iam.test:8443 {
+    tls /certs/sso.iam.test.pem /certs/sso.iam.test-key.pem
+    reverse_proxy keycloak:8080
+}
