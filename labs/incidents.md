@@ -24,6 +24,7 @@ kubectl delete deploy payments-api -n payments --ignore-not-found
 kubectl delete svc payments-api payments-api-nodeport -n payments --ignore-not-found
 kubectl delete configmap payments-api -n payments --ignore-not-found
 kubectl delete secret payments-api -n payments --ignore-not-found
+kubectl delete secret payouts -n incidents --ignore-not-found
 kubectl delete svc checkout -n default --ignore-not-found
 ```
 
@@ -134,13 +135,13 @@ kubectl -n payments rollout status deploy/payments-api
 ```bash
 kubectl apply -f Manifests/incidents/05.yaml
 kubectl -n incidents get pods
-kubectl -n incidents get endpoints menu
+kubectl -n incidents get endpointslices -l kubernetes.io/service-name=menu -o yaml
 ```
 
 Проверка из кластера, когда захочешь увидеть отказ сам:
 
 ```bash
-kubectl -n incidents run curl-day5 --rm -it --restart=Never --image=curlimages/curl -- curl -sv --max-time 5 http://menu
+kubectl -n incidents run curl-day5 --rm -it --restart=Never --image=curlimages/curl:8.21.0 -- -sv --max-time 5 http://menu
 ```
 
 [Разбор дня 5](debrief/05.md)

@@ -26,7 +26,7 @@ Kubernetes понимает это как:
 ## Полезные команды
 
 - `kubectl describe pod <имя>` — смотреть `Events` (`Pulling`, `Pulled`, `Failed`).
-- `kubectl get events --sort-by=.lastTimestamp` — общая лента событий по namespace.
+- `kubectl get events --sort-by=.metadata.creationTimestamp` — общая лента событий по namespace.
 
 ## Связанные заметки
 

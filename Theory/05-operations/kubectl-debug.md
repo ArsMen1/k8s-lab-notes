@@ -48,7 +48,7 @@ kubectl exec -it <pod> -- sh
 ```bash
 wget -qO- http://127.0.0.1:80
 wget -qO- http://payments-svc
-nslookup payments-svc.default.svc.cluster.local
+nslookup payments-svc.default
 ```
 
 ## 5. Сеть и Service

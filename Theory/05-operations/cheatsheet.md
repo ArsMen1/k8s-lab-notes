@@ -45,7 +45,7 @@
 * **Генерация YAML**: Если не хочешь писать YAML с нуля, используй `--dry-run=client -o yaml`. 
   Пример: `kubectl run my-nginx --image=nginx --dry-run=client -o yaml > pod.yaml` (создаст шаблон пода, но не запустит его).
 * **Быстрый временный под**: Если нужен под с утилитами (например, `curl`), чтобы проверить сеть:
-  `kubectl run tmp --rm -it --image=curlimages/curl --restart=Never -- sh`
+  `kubectl run tmp -n <namespace> --rm -it --restart=Never --image=busybox:1.36 --command -- sh`
 
 ## Связанные заметки
 
