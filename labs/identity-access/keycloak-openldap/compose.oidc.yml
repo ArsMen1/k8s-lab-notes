@@ -1,0 +1,29 @@
+services:
+  keycloak:
+    environment:
+      KC_HOSTNAME: "https://sso.iam.test:8443"
+      KC_HOSTNAME_STRICT: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+
+  oidc-proxy:
+    image: caddy:2.11.7-alpine
+    container_name: iam-oidc-proxy
+    restart: unless-stopped
+    depends_on:
+      - keycloak
+    ports:
+      - "127.0.0.1:8443:8443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs/sso.iam.test.pem:/certs/sso.iam.test.pem:ro
+      - ./certs/sso.iam.test-key.pem:/certs/sso.iam.test-key.pem:ro
+    networks:
+      iam: {}
+      kind:
+        aliases:
+          - sso.iam.test
+
+networks:
+  kind:
+    external: true
+    name: kind
