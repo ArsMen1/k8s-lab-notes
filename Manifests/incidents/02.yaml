@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: nginx:1.27-alpine
+          image: nginx:1.30.6-alpine
           command: ["sh", "-c"]
           args:
             - |
