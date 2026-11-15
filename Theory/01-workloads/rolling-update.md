@@ -29,7 +29,7 @@ strategy:
 ## Полезные команды
 
 ```bash
-kubectl set image deployment/payments-api api=nginx:1.27-alpine
+kubectl set image deployment/payments-api api=nginx:1.30.6-alpine
 kubectl rollout status deployment/payments-api
 kubectl rollout history deployment/payments-api
 kubectl rollout undo deployment/payments-api

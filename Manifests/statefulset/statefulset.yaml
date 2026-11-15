@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: nginx:1.27
+          image: nginx:1.30.6
           command: ["/bin/sh", "-c"]
           args: ["if [ ! -f /usr/share/nginx/html/data/identity.txt ]; then echo created-on-first-start > /usr/share/nginx/html/data/identity.txt; fi; echo $HOSTNAME >> /usr/share/nginx/html/data/starts.log; exec nginx -g 'daemon off;'"]
           ports:
