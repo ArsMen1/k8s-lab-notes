@@ -11,7 +11,7 @@
        |
        | http://localhost:8080 (только локальный учебный стенд)
        v
-    Keycloak 26.2.5
+    Keycloak 26.8.2
        |
        | LDAP: ldap://openldap:389
        v
@@ -40,6 +40,8 @@ docker --version
 docker compose version
 git --version
 ~~~
+
+**Состояние образов на 2026-11-15:** Keycloak закреплён на 26.8.2 — актуальном выпуске на дату аудита. OpenLDAP пока использует `osixia/openldap:1.5.0`: upstream объявил ветку v1 deprecated и больше не выпускает для неё обновления/исправления. Поэтому этот образ допустим только для одноразового локального упражнения с loopback-публикацией; не используй его в production и не открывай LDAP в LAN/Internet. Перед расширением лаборатории замени его на поддерживаемый OpenLDAP 2.6 image после отдельной проверки совместимости entrypoint, bootstrap LDIF и volume layout.
 
 **Безопасность:** это disposable lab, не production. OpenLDAP внутри стенда работает без TLS, потому что трафик остаётся в изолированной Docker network. Не подключай реальные учётные записи или пароли. Keycloak использует dev mode и HTTP, привязанный к localhost; не открывай эти порты в LAN/Internet. Для Kubernetes OIDC такой endpoint не подходит: API Server требует HTTPS issuer и доверенную CA. HTTPS будет отдельным этапом. Пароли создаются локально в .env, который игнорируется Git.
 
@@ -237,7 +239,7 @@ docker compose down
 
 ## Источники
 
-- [Keycloak Server Administration Guide — LDAP and Active Directory](https://www.keycloak.org/docs/26.2.5/server_admin/#_ldap)
+- [Keycloak Server Administration Guide — LDAP and Active Directory](https://www.keycloak.org/docs/latest/server_admin/#_ldap)
 - [Keycloak container guide](https://www.keycloak.org/server/containers)
 - [Kubernetes authentication](https://kubernetes.io/docs/reference/access-authn-authz/authentication/)
 - [kind configuration](https://kind.sigs.k8s.io/docs/user/configuration/)
