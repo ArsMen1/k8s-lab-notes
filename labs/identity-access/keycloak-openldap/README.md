@@ -4,6 +4,8 @@
 
 На этом этапе Kubernetes ещё не подключаем. Сначала подтверждаем LDAP bind/search и федерацию. Следующий этап добавит HTTPS issuer, OIDC client, ID token claims и Kubernetes API Server integration.
 
+Когда этап 1 пройден, переходи к [этапу 2: HTTPS issuer, OIDC client, ID token claims, kubelogin, kind API Server и RBAC по группе](oidc-kubernetes.md). Он использует тот же realm, LDAP user и group: повторно создавать каталог не нужно.
+
 ## Архитектура
 
 ~~~text
