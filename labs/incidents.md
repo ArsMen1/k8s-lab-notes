@@ -183,7 +183,7 @@ kubectl -n incidents describe pod -l app.kubernetes.io/name=payouts
 kubectl apply -f Manifests/incidents/07.yaml
 kubectl get svc checkout -n default
 kubectl -n incidents get pods -l app.kubernetes.io/name=checkout
-kubectl get endpoints checkout -n default
+kubectl get endpointslices -n default -l kubernetes.io/service-name=checkout -o yaml
 ```
 
 Короткое DNS-имя ищется только в своём namespace. Это пригодится, когда будешь решать, куда переносить объект.
