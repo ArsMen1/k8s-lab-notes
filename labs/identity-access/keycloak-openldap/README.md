@@ -43,6 +43,8 @@ git --version
 
 **Состояние образов на 2026-11-15:** Keycloak закреплён на 26.8.2 — актуальном выпуске на дату аудита. OpenLDAP пока использует `osixia/openldap:1.5.0`: upstream объявил ветку v1 deprecated и больше не выпускает для неё обновления/исправления. Поэтому этот образ допустим только для одноразового локального упражнения с loopback-публикацией; не используй его в production и не открывай LDAP в LAN/Internet. Перед расширением лаборатории замени его на поддерживаемый OpenLDAP 2.6 image после отдельной проверки совместимости entrypoint, bootstrap LDIF и volume layout.
 
+**Сохранение состояния Keycloak:** Compose не подключает volume к Keycloak. В `start-dev` используется development database `dev-file`, поэтому состояние realm/federation хранится в writable layer контейнера. `docker compose stop` / `start` сохраняют его, пока контейнер не пересоздан. `docker compose down` удаляет контейнер и сбрасывает Keycloak state, но LDAP named volumes остаются. Перенос `dev-file` между версиями Keycloak не поддерживается; перед сменой версии экспортируй нужный realm локально или будь готов создать его заново. Не коммить realm export, если он содержит секреты или персональные данные. См. [Keycloak upgrade guide](https://www.keycloak.org/docs/latest/upgrading/).
+
 **Безопасность:** это disposable lab, не production. OpenLDAP внутри стенда работает без TLS, потому что трафик остаётся в изолированной Docker network. Не подключай реальные учётные записи или пароли. Keycloak использует dev mode и HTTP, привязанный к localhost; не открывай эти порты в LAN/Internet. Для Kubernetes OIDC такой endpoint не подходит: API Server требует HTTPS issuer и доверенную CA. HTTPS будет отдельным этапом. Пароли создаются локально в .env, который игнорируется Git.
 
 ## Этап 1.1 — подготовить локальные переменные
@@ -204,14 +206,13 @@ curl -fsS http://localhost:8080/realms/k8s-lab/.well-known/openid-configuration
 | Test authentication failed | пользователю нужно задать LDAP password через ldappasswd |
 | Пользователь есть, группа не отображается | проверь group mapper, member DN и синхронизацию |
 
-Чтобы сбросить disposable стенд, сначала останови его:
+Чтобы временно остановить disposable стенд, не удаляя контейнер и его локальную базу Keycloak:
 
 ~~~bash
-docker compose down
-docker volume ls
+docker compose stop
 ~~~
 
-Определи точные имена volumes этого Compose project и удали только его volumes. Не используй docker compose down -v, если не хочешь одновременно удалить данные Keycloak и LDAP.
+Возобновить работу можно командой `docker compose start`. Если требуется пересоздать контейнеры, `docker compose down` удалит Keycloak dev-file state, но сохранит LDAP named volumes. Для полного сброса LDAP-каталога также используй `docker compose down -v` — только после проверки, что это volumes данного Compose project.
 
 ## Active Directory вместо OpenLDAP
 
@@ -232,10 +233,10 @@ AD дополнительно использует Kerberos, DNS, Group Policy �
 ## Остановка стенда
 
 ~~~bash
-docker compose down
+docker compose stop
 ~~~
 
-Данные сохраняются в Docker volumes. Для полного сброса прочитай предупреждение в Troubleshooting выше и удали только volumes этого лабораторного проекта.
+Чтобы продолжить с тем же realm и LDAP-каталогом, выполни `docker compose start`. `docker compose down` удаляет контейнер Keycloak и его dev-file state; LDAP named volumes при этом сохраняются. Полный сброс LDAP выполняй только осознанно через `docker compose down -v`, предварительно проверив имя Compose project.
 
 ## Источники
 
