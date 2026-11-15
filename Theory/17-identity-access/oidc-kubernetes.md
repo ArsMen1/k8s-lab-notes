@@ -59,14 +59,16 @@ users:
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1
-      command: kubectl-oidc_login
+      command: kubectl
+      interactiveMode: IfAvailable
       args:
+      - oidc-login
       - get-token
       - --oidc-issuer-url=https://sso.example.com/realms/platform
       - --oidc-client-id=kubernetes
 ```
 
-Это демонстрационная форма: конкретный plugin, его параметры, версия API и способ регистрации клиента зависят от выбранного решения. Не копируй пример в рабочий kubeconfig без настройки IdP и plugin.
+Пример использует [int128/kubelogin](https://github.com/int128/kubelogin): бинарный plugin вызывается через `kubectl oidc-login`, поэтому `command` равен `kubectl`, а `args` начинаются с `oidc-login get-token`. Plugin устанавливается отдельно. Redirect URI, scopes, CA trust и client authentication должны соответствовать настройкам IdP. Не копируй пример в рабочий kubeconfig без настройки IdP и plugin.
 
 ## Authentication и RBAC вместе
 
