@@ -30,6 +30,8 @@ RoleBinding -> Role pod-reader -> pods, pods/log in namespace iam-lab
 
 Для Kubernetes OIDC issuer обязан быть HTTPS, а сертификат должен быть подписан CA, которому доверяет API Server. В этом упражнении mkcert создаёт отдельный локальный CA. HTTP на `localhost:8080` остаётся только для первого этапа; OIDC issuer будет HTTPS на `sso.iam.test:8443`. Никаких `--insecure-skip-tls-verify` и отключения TLS-проверок.
 
+Если ты уже запускал предыдущую версию Stage 1 до добавления `KC_PROXY_HEADERS`, не обновляй Compose вслепую: изменение environment пересоздаст Keycloak container и сбросит его dev-file realm state. Сначала экспортируй realm/users или будь готов заново создать realm и LDAP federation. После применения новой базовой конфигурации Stage 2 overlay не пересоздаёт Keycloak.
+
 ## Этап 2.1 — выпустить локальный сертификат
 
 Работай из каталога `labs/identity-access/keycloak-openldap`.
@@ -72,7 +74,7 @@ docker compose -f docker-compose.yml -f compose.oidc.yml up -d
 docker compose -f docker-compose.yml -f compose.oidc.yml ps
 ~~~
 
-Caddy подключён к двум Docker networks: `iam` (для доступа к Keycloak по `keycloak:8080`) и `kind` (для доступа API Server к issuer по DNS alias `sso.iam.test`). Host port `8443` привязан только к `127.0.0.1`. Keycloak получает внешний hostname `https://sso.iam.test:8443` и доверяет только proxy headers от локального reverse proxy в этом disposable стенде.
+Caddy подключён к двум Docker networks: `iam` (для доступа к Keycloak по `keycloak:8080`) и `kind` (для доступа API Server к issuer по DNS alias `sso.iam.test`). Host port `8443` привязан только к `127.0.0.1`. Базовый Compose уже задаёт `KC_PROXY_HEADERS=xforwarded` и `KC_HOSTNAME_STRICT=false`: Caddy передаёт `X-Forwarded-Host` и `X-Forwarded-Proto`, поэтому Keycloak формирует внешний HTTPS issuer из запроса. Overlay не меняет environment Keycloak и не должен пересоздавать его контейнер — это важно, потому что dev-file realm хранится в writable layer. Динамические hostname/forwarded headers небезопасны для публичного сервиса; здесь они допустимы только в изолированном disposable стенде с loopback-публикацией и доверенным локальным Caddy.
 
 Проверь discovery и TLS с хоста:
 
@@ -215,7 +217,7 @@ kubectl get secrets -n iam-lab
 - В claims проверь точное совпадение `iss` с `--oidc-issuer-url`, наличие `kubernetes` в `aud`, актуальный `exp`, а также `preferred_username` и `groups`.
 - Выполни `curl.exe --cacert certs/rootCA.pem https://sso.iam.test:8443/realms/k8s-lab/.well-known/openid-configuration`; discovery должен вернуть тот же issuer.
 - Проверь `docker exec iam-oidc-lab-control-plane getent hosts sso.iam.test` и наличие CA по пути `/etc/kubernetes/pki/oidc-root-ca.pem`.
-- Проверь, что `KC_HOSTNAME` задаёт HTTPS URL realm, а `KC_PROXY_HEADERS=xforwarded` включён в override. Discovery `issuer` не должен содержать `localhost` или HTTP.
+- В этом dev-профиле `KC_HOSTNAME` намеренно не задан: `KC_HOSTNAME_STRICT=false` и `KC_PROXY_HEADERS=xforwarded` позволяют Keycloak взять внешний host/scheme из заголовков локального Caddy. Discovery `issuer` не должен содержать `localhost` или HTTP.
 - Убедись, что используется ID token, а не access token; не включай `--oidc-use-access-token`.
 - Проверь системное время хоста и API Server. При необходимости изучи логи static pod через `docker exec iam-oidc-lab-control-plane crictl ps --name kube-apiserver`, затем `crictl logs <container-id>`.
 
