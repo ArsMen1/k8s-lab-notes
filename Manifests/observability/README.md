@@ -13,4 +13,28 @@ Prometheus/Grafana stack не vendored в репозитории: CRDs, values �
     kubectl get prometheusrules -A
     kubectl get events -n monitoring --sort-by=.metadata.creationTimestamp
 
-Пример PrometheusRule находится в prometheus-rule-example.yaml. Он требует CRD PrometheusRule и Prometheus Operator; label release должен совпадать с ruleSelector установленного chart. Выражение up == 0 иллюстрирует scrape health, но не заменяет сервисные RED alerts. Официально: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+Пример scrape-health rule находится в `prometheus-rule-example.yaml`. Он требует CRD PrometheusRule и Prometheus Operator; label `release` должен совпадать с ruleSelector установленного chart. Выражение `up == 0` иллюстрирует scrape health, но не заменяет сервисные RED alerts.
+
+## Synthetic alert lab
+
+После установки stack в disposable-кластере проверь CRD и Prometheus:
+
+    kubectl config current-context
+    kubectl get crd prometheusrules.monitoring.coreos.com
+    kubectl get prometheus -A
+    kubectl get prometheusrules -n monitoring
+
+В `alert-lab.yaml` задан тестовый alert `K8sLabSyntheticAlert` с выражением `vector(1)`: он должен перейти в Firing примерно через минуту. Перед применением проверь namespace и измени label `release`, если он не совпадает с `spec.ruleSelector` твоего Prometheus.
+
+    kubectl apply -f Manifests/observability/alert-lab.yaml
+    kubectl get prometheusrules -n monitoring
+
+Найди Prometheus Service через `kubectl get svc -n monitoring`, затем выполни port-forward на его web port и проверь `/alerts` или запрос `ALERTS{alertname="K8sLabSyntheticAlert"}`. Если rule не появился, проверь CRD, `ruleSelector`, `ruleNamespaceSelector`, labels и логи Prometheus Operator. Alertmanager notification не гарантируется: route/receiver могут фильтровать severity warning, поэтому сначала проверь состояние rule в Prometheus.
+
+После проверки удали только тестовый rule:
+
+    kubectl delete -f Manifests/observability/alert-lab.yaml
+
+Не применяй этот сценарий в production: правило намеренно постоянно firing, пока его не удалить.
+
+Официально: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack

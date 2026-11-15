@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: k8s-lab-synthetic-alert
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: k8s-lab.synthetic
+      rules:
+        - alert: K8sLabSyntheticAlert
+          expr: vector(1)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: Synthetic alert for Kubernetes lab
+            description: This alert is intentionally firing until the lab PrometheusRule is deleted.

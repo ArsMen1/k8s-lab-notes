@@ -48,12 +48,10 @@
 
 Симптом: alert о росте latency/errors либо saturation.
 
-Диагностика: выбери временное окно, сравни RED (rate/errors/duration) с USE (utilization/saturation/errors), проверь Prometheus target health, scrape gaps, dashboard time range, logs и trace IDs.
+Выполни [synthetic alert lab](../../Manifests/observability/README.md#synthetic-alert-lab) в disposable-кластере. Создай тестовое правило `K8sLabSyntheticAlert` с `vector(1)`, дождись Firing в Prometheus, найди его в Alertmanager и удали только тестовый PrometheusRule. Если правило не появляется, проверь CRD, Prometheus `ruleSelector` / `ruleNamespaceSelector`, label `release`, namespace и логи Operator.
 
-Root cause нельзя выводить из одного графика. Раздели impact по service/namespace/node/zone, сопоставь с change timeline и подтверди гипотезу независимым сигналом.
+После проверки проведи incident triage: выбери временное окно, сравни RED (rate/errors/duration) с USE (utilization/saturation/errors), проверь Prometheus target health, scrape gaps, dashboard time range, logs и trace IDs. Root cause нельзя выводить из одного графика: раздели impact по service/namespace/node/zone, сопоставь с change timeline и подтверди гипотезу независимым сигналом.
 
-Безопасное исправление: mitigation должно соответствовать подтверждённой причине. Не отключай alert и не меняй threshold только ради зелёного статуса.
-
-Проверка: customer impact восстановлен, метрики вернулись к baseline, alert resolved и причина/предотвращение задокументированы.
+Безопасное исправление: mitigation должно соответствовать подтверждённой причине. Не отключай alert и не меняй threshold только ради зелёного статуса. Проверка: customer impact восстановлен, метрики вернулись к baseline, alert resolved и причина/предотвращение задокументированы. Тестовое правило обязательно удали после упражнения.
 
 Для каждого сценария заполни symptom, impact, timeline, evidence, hypotheses, root cause, mitigation, validation и prevention.
