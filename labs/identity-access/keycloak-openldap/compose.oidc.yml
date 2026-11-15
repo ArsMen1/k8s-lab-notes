@@ -1,10 +1,4 @@
 services:
-  keycloak:
-    environment:
-      KC_HOSTNAME: "https://sso.iam.test:8443"
-      KC_HOSTNAME_STRICT: "true"
-      KC_PROXY_HEADERS: "xforwarded"
-
   oidc-proxy:
     image: caddy:2.11.7-alpine
     container_name: iam-oidc-proxy
