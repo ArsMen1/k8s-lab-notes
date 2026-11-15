@@ -21,8 +21,9 @@ Pod использует nameserver из /etc/resolv.conf. При типично
 
     kubectl get svc -n kube-system
     kubectl get pods -n kube-system --show-labels
-    kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
-    kubectl get configmap coredns -n kube-system -o yaml
+    kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=<dns-service>
+    kubectl get configmaps -n kube-system
+    kubectl get configmap <coredns-configmap> -n kube-system -o yaml
     kubectl describe pod <pod> -n <namespace>
 
 Изнутри Pod, если доступны nslookup/dig:
@@ -34,7 +35,7 @@ Pod использует nameserver из /etc/resolv.conf. При типично
 
 Если не работает ни cluster, ни external DNS — проверь Pod DNS config, DNS Service/endpoints, CoreDNS и NetworkPolicy. Если cluster работает, а внешний домен нет — проверь forward/upstream. Если FQDN работает, а короткое имя нет — проверь namespace/search domains. Если DNS работает, но соединение нет — исследуй Service, EndpointSlice, NetworkPolicy и приложение.
 
-CoreDNS labels, Deployment, replicas и Corefile отличаются между дистрибутивами. Сначала смотри реальные labels, не используй слепо selector k8s-app=kube-dns.
+Имя DNS Service, CoreDNS labels, Deployment, replicas и ConfigMap/Corefile отличаются между дистрибутивами. Сначала смотри реальные Service, EndpointSlice, Pod labels и ConfigMaps; подставляй фактические имена и не используй слепо selector k8s-app=kube-dns.
 
 Не редактируй Corefile и не перезапускай DNS Pods как первый шаг: это влияет на весь кластер.
 

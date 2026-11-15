@@ -80,14 +80,16 @@
     kubectl get endpointslices -n <namespace> -l kubernetes.io/service-name=<service> -o yaml
     kubectl describe pod <pod> -n <namespace>
     kubectl get networkpolicy -n <namespace>
-    kubectl get svc kube-dns -n kube-system
-    kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide
-    kubectl logs -n kube-system -l k8s-app=kube-dns --tail=100
+    kubectl get svc -n kube-system
+    kubectl get pods -n kube-system --show-labels -o wide
+    kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=<dns-service> -o yaml
+    kubectl get configmaps -n kube-system
+    kubectl logs -n kube-system <coredns-pod> --all-containers=true --tail=100
     kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
 
-Если разрешён диагностический Pod, проверь DNS из того же namespace. При сбое DNS отдельно проверь Service kube-dns и CoreDNS Pods (в некоторых дистрибутивах имена/labels отличаются):
+Сначала определи фактическое имя DNS Service, его EndpointSlice, ConfigMap и CoreDNS Pod по выводу команд выше. Не предполагай, что Service всегда называется kube-dns или что Pod имеет label k8s-app=kube-dns.
 
-    kubectl run netcheck -n <namespace> --rm -it --restart=Never --image=busybox:1.36 -- nslookup <service>.<namespace>.svc.cluster.local
+    kubectl run netcheck -n <namespace> --rm -it --restart=Never --image=busybox:1.36 --command -- sh -c 'cat /etc/resolv.conf; nslookup <service>'
 
 **Типичные root cause:** selector не совпадает с labels; Pod не Ready; targetPort неверен; приложение слушает только loopback; NetworkPolicy блокирует ingress/egress; неисправны CoreDNS или CNI.
 
@@ -303,6 +305,29 @@
 **Безопасное исправление:** исправь подтверждённый image reference или настрой scoped pull secret через secret-management процесс. Не используй публичный/анонимный доступ как обход приватного registry.
 
 **Проверка:** образ скачан, контейнер стартовал, Pod Ready, image digest соответствует ожидаемому release.
+
+## 13. Alert не загружается или не доходит до Alertmanager
+
+**Симптом:** ожидаемого alert нет в Prometheus/Alertmanager либо rule загружен, но состояние не переходит в Pending/Firing.
+
+**Диагностика**
+
+    kubectl get pods,svc -n monitoring
+    kubectl get prometheus -A
+    kubectl get servicemonitors,podmonitors,prometheusrules -A
+    kubectl get pods -A | grep -Ei 'prometheus|operator|alertmanager'
+    kubectl describe prometheusrule <rule> -n <namespace>
+    kubectl get events -n monitoring --sort-by=.metadata.creationTimestamp
+
+Через Prometheus UI проверь Targets, загруженный rule и результат самого PromQL expression. Затем проверь Alertmanager route/receiver и логи соответствующих Pods. Не выводи значения Secret с credentials receiver.
+
+**Root cause:** rule не выбран из-за ruleSelector/ruleNamespaceSelector или labels; target не scrape-ится; PromQL возвращает пустой набор/не те series; не истёк `for`; Alertmanager route фильтрует labels/severity либо receiver недоступен.
+
+**Безопасное исправление:** исправь подтверждённый selector, scrape target, label или выражение и согласуй изменение alert с владельцем сервиса. Не отключай alert и не ослабляй threshold только ради зелёного статуса. Синтетическое выражение `vector(1)` проверяет прохождение rule pipeline, но не подтверждает наличие сервисных метрик, корректность SLO или доставку уведомлений.
+
+**Проверка:** Prometheus загрузил rule, expression возвращает ожидаемые series, состояние проходит ожидаемый переход; если требуется уведомление — Alertmanager выбирает ожидаемый route и receiver подтверждает доставку.
+
+---
 
 ## Шаблон RCA
 

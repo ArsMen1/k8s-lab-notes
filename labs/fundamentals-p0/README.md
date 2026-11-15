@@ -101,8 +101,9 @@ Root cause: отличай memory limit контейнера от node MemoryPre
 
     kubectl get svc -n kube-system
     kubectl get pods -n kube-system --show-labels
-    kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=kube-dns
-    kubectl get configmap coredns -n kube-system
+    kubectl get endpointslices -n kube-system -l kubernetes.io/service-name=<dns-service>
+    kubectl get configmaps -n kube-system
+    kubectl get configmap <coredns-configmap> -n kube-system -o yaml
 
 Из Pod проверь /etc/resolv.conf и nslookup kubernetes.default, затем FQDN нужного Service. Учитывай, что образ может не содержать nslookup.
 

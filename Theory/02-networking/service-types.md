@@ -5,7 +5,7 @@
 ## ClusterIP (по умолчанию)
 
 - Доступен **только внутри** кластера.
-- DNS: `payments-svc.default.svc.cluster.local`
+- DNS: `payments-svc.default.svc.<cluster-domain>` (часто `cluster.local`; проверь домен конкретного кластера)
 - Типичный кейс: backend, который дергают другие поды / Ingress.
 
 Практика: `Manifests/payments-api/service.yaml`

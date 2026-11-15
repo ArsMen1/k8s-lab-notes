@@ -20,9 +20,9 @@ Namespace ограничивает **имена объектов** и удобн
 
 Из пода в `lab` к сервису в `default`:
 
-`payments-svc.default.svc.cluster.local`
+`payments-svc.default`
 
-Короткое имя `payments-svc` ищет только **внутри своего** namespace.
+Имя `payments-svc.default` позволяет обратиться к Service в другом namespace. Полный FQDN имеет форму `payments-svc.default.svc.<cluster-domain>`; `cluster.local` — распространённое значение по умолчанию, но домен кластера может отличаться.
 
 ## Системные namespace
 
@@ -38,7 +38,7 @@ kubectl apply -f Manifests/echo/
 kubectl rollout status deployment/echo -n lab
 kubectl -n lab get all
 kubectl -n lab exec deploy/echo -- wget -qO- http://echo
-kubectl -n lab exec deploy/echo -- wget -qO- http://payments-api.payments.svc.cluster.local
+kubectl -n lab exec deploy/echo -- wget -qO- http://payments-api.payments
 ```
 
 Практика: `Manifests/echo/`
