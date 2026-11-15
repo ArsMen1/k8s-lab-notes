@@ -4,12 +4,13 @@
 
 ## Этап 0 — фундамент
 
-1. [[what-is-kubernetes]] — назначение Kubernetes, control plane и worker nodes.
-2. [[glossary-core-objects]] — карта основных объектов.
-3. [[pod-vs-container]] и [[deployment-vs-replicaset]] — Pod, Deployment и ReplicaSet.
-4. [[why-service]], [[where-are-endpoints-stored]], [[service-types]] — Service и EndpointSlice.
-5. [[where-is-nginx-from]] — образы и container runtime.
-6. [[daemonset-explained]] — DaemonSet.
+1. [[kubectl-basics]] — что такое kubectl, kubeconfig, context и как читать команды. Это вводная заметка перед практикой.
+2. [[what-is-kubernetes]] — назначение Kubernetes, control plane и worker nodes.
+3. [[glossary-core-objects]] — карта основных объектов.
+4. [[pod-vs-container]] и [[deployment-vs-replicaset]] — Pod, Deployment и ReplicaSet.
+5. [[why-service]], [[where-are-endpoints-stored]], [[service-types]] — Service и EndpointSlice.
+6. [[where-is-nginx-from]] — образы и container runtime.
+7. [[daemonset-explained]] — DaemonSet.
 
 Практика:
 
