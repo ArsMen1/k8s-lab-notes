@@ -33,7 +33,9 @@ Namespace ограничивает **имена объектов** и удобн
 ## Практика в лабе
 
 ```bash
+kubectl apply -f Manifests/echo/namespace.yaml
 kubectl apply -f Manifests/echo/
+kubectl rollout status deployment/echo -n lab
 kubectl -n lab get all
 kubectl -n lab exec deploy/echo -- wget -qO- http://echo
 kubectl -n lab exec deploy/echo -- wget -qO- http://payments-api.payments.svc.cluster.local

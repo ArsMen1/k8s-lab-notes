@@ -22,6 +22,8 @@
 
 ## ⚙️ Управление (Apply & Delete)
 
+> `apply`, `delete`, `scale` и `rollout undo` изменяют состояние кластера. Перед запуском проверь context, namespace и объект. Для предварительного просмотра используй `kubectl diff -f file.yaml`; для серверной проверки без сохранения — `kubectl apply --dry-run=server -f file.yaml` (если API и admission webhooks поддерживают dry-run).
+
 * `kubectl apply -f file.yaml` — применить манифест (создать или обновить).
 * Для каталога приложения сначала создай namespace, затем применяй каталог: `kubectl apply -f Manifests/payments-api/namespace.yaml && kubectl apply -f Manifests/payments-api/`. Не полагайся на порядок файлов в директории. Каталог `Manifests/` целиком не применяй: там лежат сломанные `incidents/`.
 * `kubectl delete -f file.yaml` — удалить ресурс, описанный в файле.
@@ -49,4 +51,4 @@
 
 - Алгоритм отладки: [[kubectl-debug]]
 - Как kubectl работает под капотом: [[how-kubectl-works]]
-- Трек обучения: [[learning-path]]
+- Трек обучения: [[Theory/00-overview/learning-path]]

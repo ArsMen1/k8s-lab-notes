@@ -54,29 +54,54 @@ Service смотрит только на метки Pod'ов.
 
 ## Полезные команды
 
+Команды фильтрации и управления метками удобно разделять: пояснения не должны попадать в командную строку.
+
+### 1. Фильтрация
+
 ```bash
-## 🔍 1. Фильтрация (Поиск по лейблам)
-Команды kubectl get поддерживают флаг -l (от слова label).
+# Точное совпадение
+kubectl get pods -l app=payments-api
 
-kubectl get pods -l app=payments-api — поды только для сервиса оплаты.
-kubectl get all -l tier=backend — вообще все ресурсы (поды, сервисы, деплойменты), у которых есть метка tier=backend.
-kubectl get pods -l env=prod,tier=frontend — && поды, где есть И env=prod, И tier=frontend.
-kubectl get pods -l 'env in (prod, staging)' —  IN. поды в проде или на стейджинге.
-kubectl get pods -l 'env notin (dev)' —  NOTIN. всё, что не в деве.
-kubectl get pods -l '!app' — !. все поды, у которых вообще нет метки app.
+# Несколько условий: AND
+kubectl get pods -l env=prod,tier=frontend
 
-## 🏷️ 2. Управление лейблами (Добавление и Удаление)
+# Set-based selectors
+kubectl get pods -l 'env in (prod,staging)'
+kubectl get pods -l 'env notin (dev)'
 
-kubectl label pod <имя-пода> env=lab — добавить метку env=lab поду.
-kubectl label pod <имя-пода> env- — **удалить** метку env (обрати внимание на дефис в конце). 
-kubectl label pod <имя-пода> app=payments-api-new --overwrite — перезаписать существующую метку. Без флага --overwrite команда выдаст ошибку, если такая метка уже есть.
+# Объекты без label app
+kubectl get pods -l '!app'
 
-## 👁️ 3. Просмотр меток
-kubectl get pods --show-labels — вывести список подов с колонкой всех их меток.
-kubectl get pods -L app,tier — вывести метки app и tier в виде отдельных колонок (удобно для чтения).
-kubectl describe pod <имя-пода> — посмотреть метки в секции Labels.
+# Только часть основных типов ресурсов, не все API-ресурсы
+kubectl get all -l tier=backend
 ```
 
+`kubectl get all` не включает все типы ресурсов: например, Secrets и PVC нужно запрашивать отдельно.
+
+### 2. Добавление, изменение и удаление
+
+```bash
+# Добавить новую метку
+kubectl label pod <pod-name> env=lab
+
+# Удалить метку env (дефис после имени ключа)
+kubectl label pod <pod-name> env-
+
+# Изменить уже существующую метку
+kubectl label pod <pod-name> app=payments-api-new --overwrite
+```
+
+`--overwrite` нужен, когда ключ уже существует и его значение требуется изменить. Не меняй labels Pod, управляемых контроллером, если это может нарушить selector.
+
+### 3. Просмотр меток
+
+```bash
+kubectl get pods --show-labels
+kubectl get pods -L app,tier
+kubectl describe pod <pod-name>
+```
+
+`-L` выводит выбранные метки отдельными колонками, а `--show-labels` — все метки в одной колонке.
 ## ⚠️ Важный нюанс про `--overwrite`
 Если ты пытаешься навесить метку, которая уже есть на объекте (например, `app=payments-api`), команда `kubectl label` завершится ошибкой. Kubernetes защищает от случайной перезаписи. Чтобы принудительно изменить значение, всегда добавляй `--overwrite`.
 

@@ -51,4 +51,4 @@ ports:
 
 - Зачем вообще Service: [[why-service]]
 - Endpoints: [[where-are-endpoints-stored]]
-- Дальше по сети: Ingress (пока в глоссарии) — [[glossary-core-objects#Ingress]]
+- Дальше по сети: Ingress (описан в глоссарии) — [[glossary-core-objects]]
