@@ -61,12 +61,12 @@ livenessProbe:
 ## Полезные команды
 
 ```bash
-kubectl get endpoints payments-svc
+kubectl get endpointslices -n <namespace> -l kubernetes.io/service-name=payments-svc -o yaml
 kubectl describe pod <имя>   # смотри Ready / Last State / Events
 kubectl get pods -o wide
 ```
 
 ## Связанные заметки
 
-- Service и Endpoints: [[why-service]]
+- Service и EndpointSlice: [[why-service]]
 - Отладка: [[kubectl-debug]]

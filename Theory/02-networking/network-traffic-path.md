@@ -66,7 +66,7 @@ Ingress — HTTP/HTTPS routing API, а не Service type. Ingress Controller п�
 
 ## 5. Endpoints и EndpointSlice
 
-Старый Endpoints API ограничен по масштабированию и не поддерживает часть новых возможностей. EndpointSlice разбивает endpoints одного Service на несколько объектов и является рекомендуемым API для service backends. В диагностике используй EndpointSlice; kubectl get endpoints оставляй как совместимый быстрый обзор.
+Старый Endpoints API ограничен по масштабированию и deprecated начиная с Kubernetes v1.33. EndpointSlice разбивает backend-ы одного Service на несколько объектов и является рекомендуемым API. В новых runbooks и автоматизации используй EndpointSlice; `kubectl get endpoints` оставляй только для чтения старых инструкций и совместимости.
 
 ## Связанные заметки
 

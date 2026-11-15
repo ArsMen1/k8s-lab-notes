@@ -54,11 +54,10 @@ nslookup payments-svc.default.svc.cluster.local
 ## 5. Сеть и Service
 
 ```bash
-kubectl get endpoints payments-svc
-kubectl get endpointslices -l kubernetes.io/service-name=payments-svc
+kubectl get endpointslices -n <namespace> -l kubernetes.io/service-name=payments-svc -o yaml
 ```
 
-Если Endpoints пустой:
+Если у Service нет подходящих ready endpoints в EndpointSlice:
 
 - не совпали labels (см. [[labels-and-selectors]]);
 - поды не Ready (часто readiness probe);

@@ -1,32 +1,39 @@
-# Где хранятся Endpoints и почему их нет в Git?
+# Где хранятся EndpointSlice и Endpoints?
 
-## Краткий ответ:
+## Краткий ответ
 
-Ты их не создаешь. Их создает **контроллер** (часть `kube-controller-manager`). Они хранятся в базе данных **`etcd`** внутри кластера. В Git их нет, потому что Git хранит только _желаемое состояние_ (что ты хочешь), а Endpoints — это _вычисляемое состояние_ (что получилось).
+Для Service с selector Kubernetes автоматически поддерживает backend list через объекты `EndpointSlice`. Их создаёт EndpointSlice controller в control plane; это обычные API-объекты, которые хранятся через API Server в etcd. В Git обычно описывают желаемые Service и Pod, а не динамические IP backend-ов.
 
-## Как это работает:
+Старый API `Endpoints` остаётся для совместимости, но deprecated начиная с Kubernetes v1.33. Для новых манифестов, автоматизации и диагностики используй `EndpointSlice`.
 
-1. Ты создаешь `Service` (в файле).
-2. Ты создаешь `Deployment` (в файле).
-3. **Контроллер `endpoint-controller`** (программа внутри K8s) постоянно сканирует кластер.
-4. Он видит: «У сервиса `payments-svc` есть селектор, и есть поды, которые под него подходят».
-5. Он **автоматически** создает объект `Endpoints` (или `EndpointSlice` ) и записывает туда IP-адреса подов.
-6. `kube-proxy` на каждой ноде читает эти Endpoints и настраивает сетевые правила (iptables/IPVS), чтобы трафик шел на эти IP.
+## Как это работает
 
-## Почему в Git нет файла endpoints.yaml?
+1. Ты создаёшь Service с selector.
+2. EndpointSlice controller наблюдает Service и Pod в том же namespace.
+3. Контроллер выбирает Pod, labels которых соответствуют selector, и обновляет один или несколько EndpointSlice.
+4. В EndpointSlice хранятся адреса, порты и conditions (`ready`, `serving`, `terminating`).
+5. `kube-proxy` или заменяющий его dataplane использует EndpointSlice для маршрутизации Service traffic.
 
-Потому что если бы ты создавал его вручную, тебе пришлось бы каждый раз обновлять его при перезапуске любого пода (ведь IP меняются). Kubernetes делает это автоматически. Ты доверяешь ему управление «вычисляемыми» ресурсами.
+Service selector не выбирает Pod из других namespace. Для selectorless Service backend endpoints могут поддерживаться вручную через EndpointSlice.
 
-## Полезные команды:
+## Важно про readiness
 
-- `kubectl get endpoints payments-svc` — посмотреть IP, которые контроллер записал.
-- `kubectl get endpointslices` — более новый и масштабируемый способ (используется в больших кластерах).
+Не своди readiness к утверждению, что IP обязательно исчезает из объекта. Endpoint может остаться в EndpointSlice с `conditions.ready: false`; обычные Service proxies не направляют на него новый трафик. Для Service с `publishNotReadyAddresses: true` поведение отличается.
 
-## Важно про Ready
+## Полезные команды
 
-В Endpoints попадают только поды, которые **Ready**. Если упал readinessProbe — IP пропадает из Endpoints, хотя под еще Running. См. [[health-probes]].
+```bash
+kubectl get svc <service> -n <namespace> -o yaml
+kubectl get endpointslices -n <namespace> -l kubernetes.io/service-name=<service> -o yaml
+kubectl get pods -n <namespace> --show-labels -o wide
+```
 
-## Связанные заметки:
+Для чтения старых runbooks можно встретить `kubectl get endpoints <service> -n <namespace>`, но не используй Endpoints API как основу новых интеграций.
 
-- Зачем Service: [[why-service]]
-- Отладка пустых Endpoints: [[kubectl-debug]]
+## Связанные заметки
+
+- Зачем нужен Service: [[why-service]]
+- Отладка пустых backend-ов: [[kubectl-debug]]
+- Путь трафика: [[network-traffic-path]]
+
+Официально: [EndpointSlices](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/).
