@@ -6,7 +6,7 @@
 
 Начни с [hands-on лаборатории Keycloak + OpenLDAP](keycloak-openldap/README.md). Она поднимает изолированный локальный LDAP-каталог и Keycloak, подключает LDAP federation и проверяет импорт пользователя arsen и группы k8s-readers.
 
-Это первый этап: HTTP используется только локально для UI и discovery. Не подключай его к Kubernetes. Следующий этап потребует HTTPS issuer, доверенной CA, OIDC client и кластера, где доступна настройка kube-apiserver authentication.
+Это первый этап: HTTP используется только локально для UI и discovery. Не подключай его к Kubernetes. Следующий этап потребует HTTPS issuer, доверенной CA, OIDC client и кластера, где доступна настройка kube-apiserver authentication. Продолжение — [этап 2: OIDC login в kind и RBAC по LDAP-группе](keycloak-openldap/oidc-kubernetes.md).
 
 ## Сценарий 1 — 401 Unauthorized
 
