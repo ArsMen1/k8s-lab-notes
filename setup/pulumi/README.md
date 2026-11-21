@@ -1,30 +1,38 @@
-# Pulumi: local kind cluster (TypeScript)
+# Pulumi: локальный kind-кластер (TypeScript)
 
-Pulumi creates a local kind cluster by calling the installed `kind` CLI via the Pulumi Command provider. Docker must be running. It does not deploy workloads or apply Kubernetes manifests.
+Pulumi создаёт локальный kind-кластер, вызывая установленную `kind` через провайдер Pulumi Command. Docker должен быть запущен. Учебные приложения и Kubernetes-манифесты не применяются.
 
-## Requirements
-- Docker running
-- kind installed
-- Node.js/npm
+## Что понадобится
+
+- Запущенный Docker
+- kind
+- Node.js и npm
 - Pulumi CLI
 
-## Run from this directory
+## Запуск (из этой папки)
+
 ```bash
 npm install
 pulumi stack init dev
 pulumi config set clusterName k8s-lab
 pulumi up
 ```
-Review the preview before confirming. Verify:
-```
+
+Pulumi покажет предварительный план изменений. Проверь его перед подтверждением. Затем проверь кластер:
+
+```bash
 kubectl --kubeconfig ../../setup/.kube/kubeconfig get nodes -o wide
 kubectl --kubeconfig ../../setup/.kube/kubeconfig get pods -A
 ```
-## Destroy
+
+## Удаление кластера
+
 ```bash
 pulumi destroy
 ```
-## Notes
-- Uses a dedicated kubeconfig file, not the default one.
-- No lab workloads are deployed automatically.
-- Keep Pulumi state local and do not commit it.
+
+## Важно
+
+- Используется отдельный kubeconfig, основной конфиг kubectl не заменяется.
+- Учебные приложения автоматически не устанавливаются.
+- State Pulumi хранится локально — не добавляй его в Git.
