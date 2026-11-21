@@ -3,7 +3,7 @@ import * as command from "@pulumi/command";
 
 const config = new pulumi.Config();
 const clusterName = config.get("clusterName") ?? "k8s-lab";
-const kindConfigPath = "../../kind-config.yaml";
+const kindConfigPath = "../kind-config.yaml";
 const kubeconfigPath = "../../setup/.kube/kubeconfig";
 
 // Creates a local kind cluster through Docker; does not apply lab workloads.
