@@ -10,3 +10,13 @@
 
 # Кэш плагина Git (чтобы не коммитить каждый auto-save)
 .obsidian/plugins/*/data.json
+# Local Kubernetes lab credentials and state
+setup/.kube/
+setup/terraform/.terraform/
+setup/terraform/terraform.tfstate
+setup/terraform/terraform.tfstate.*
+setup/terraform/.terraform.lock.hcl
+setup/pulumi/node_modules/
+setup/pulumi/bin/
+setup/pulumi/Pulumi.*.yaml
+setup/pulumi/.pulumi/
