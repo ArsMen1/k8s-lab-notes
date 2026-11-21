@@ -1,0 +1,9 @@
+{
+  "name": "k8s-lab-pulumi",
+  "private": true,
+  "devDependencies": {
+    "@pulumi/command": "^1.0.1",
+    "@pulumi/pulumi": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}
