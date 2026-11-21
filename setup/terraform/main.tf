@@ -15,7 +15,7 @@ variable "cluster_name" {
 variable "kind_config_path" {
   description = "kind config path relative to this directory"
   type = string
-  default = "../../kind-config.yaml"
+  default = "../kind-config.yaml"
 }
 variable "kubeconfig_path" {
   description = "Dedicated kubeconfig path"
