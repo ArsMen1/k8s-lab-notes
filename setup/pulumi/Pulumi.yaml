@@ -1,0 +1,6 @@
+name: k8s-lab-local
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: Local kind cluster for Kubernetes learning
