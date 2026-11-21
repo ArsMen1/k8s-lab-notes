@@ -4,6 +4,7 @@
   "devDependencies": {
     "@pulumi/command": "^1.0.1",
     "@pulumi/pulumi": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.2"
   }
 }
