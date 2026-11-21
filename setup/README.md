@@ -1,34 +1,44 @@
-# Local Kubernetes environment
+# Локальная Kubernetes-лаборатория
 
-This folder contains alternative Infrastructure as Code examples for a local [kind](https://kind.sigs.k8s.io/) cluster.
+Здесь собраны способы поднять учебный Kubernetes-кластер на своём компьютере с помощью [kind](https://kind.sigs.k8s.io/).
 
-> Creates local Docker containers only. It does not deploy the repo's application manifests or target a remote cluster.
+> Эти настройки создают кластер из Docker-контейнеров **только локально**. Учебные приложения и манифесты автоматически не устанавливаются. Настройки не предназначены для подключения к удалённым кластерам.
 
-## Requirements
-- Docker running
-- kind installed
-- Choose Terraform or Pulumi + Node.js
+## Что понадобится
 
-Cluster: `k8s-lab` with one control-plane and one worker. Host port `8080` maps to node port `30080`. A dedicated kubeconfig is saved in `setup/.kube/kubeconfig`, not your default config.
+- Docker Desktop (Windows/macOS) или Docker Engine (Linux) — запущенный
+- [kind](https://kind.sigs.k8s.io/) — инструмент для создания локального Kubernetes
+- На выбор: Terraform или Pulumi + Node.js
 
-## Options
-- [Terraform](terraform/README.md)
-- [Pulumi TypeScript](pulumi/README.md)
+Создаётся кластер `k8s-lab`: одна control-plane нода и один worker. Порт компьютера `8080` перенаправляется на NodePort `30080`. Kubeconfig сохраняется отдельно: `setup/.kube/kubeconfig`, поэтому основной kubeconfig не перезаписывается.
 
-## Manual kind command (from setup/)
+## Выбери инструмент
+
+- [Terraform — запуск кластера](terraform/README.md)
+- [Pulumi — запуск кластера на TypeScript](pulumi/README.md)
+- [Terraform и Pulumi: сравнение](terraform-vs-pulumi.md)
+
+## Запуск вручную через kind
+
+Если хочешь обойти IaC, находясь в каталоге `setup/`:
+
 ```bash
 kind create cluster --name k8s-lab --config kind-config.yaml --kubeconfig .kube/kubeconfig
 ```
 
-## Verify (from setup/)
-Bash:
+## Проверка созданного кластера
+
+Bash (из каталога `setup/`):
+
 ```bash
 export KUBECONFIG="$(pwd)/.kube/kubeconfig"
 kubectl config current-context
 kubectl get nodes -o wide
 kubectl get pods -A
 ```
+
 PowerShell:
+
 ```powershell
 $env:KUBECONFIG = "$(Get-Location)/.kube/kubeconfig"
 kubectl config current-context
@@ -36,5 +46,12 @@ kubectl get nodes -o wide
 kubectl get pods -A
 ```
 
-## Cleanup
-Use the destroy command in your chosen IaC guide, or manually `kind delete cluster --name k8s-lab`.
+## Удаление
+
+Удаляй кластер командой выбранного инструмента из его инструкции. Либо вручную:
+
+```bash
+kind delete cluster --name k8s-lab
+``
+
+Удаление кластера уничтожит локальные Kubernetes-ресурсы в нём.
