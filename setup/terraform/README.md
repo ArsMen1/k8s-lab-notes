@@ -1,29 +1,37 @@
-# Terraform: local kind cluster
+# Terraform: локальный kind-кластер
 
-Terraform manages a local kind cluster by invoking the installed `kind` CLI. Docker must be running. No Kubernetes app manifests are applied.
+Terraform создаёт и удаляет локальный kind-кластер, вызывая установленную утилиту `kind`. Docker должен быть запущен. Учебные Kubernetes-манифесты не применяются.
 
-## Requirements
-- Docker running
-- kind installed
-- Terraform installed
+## Что понадобится
 
-## Run from this directory
+- Запущенный Docker
+- kind
+- Terraform
+
+## Запуск (из этой папки)
+
 ```bash
 terraform init
 terraform plan
 terraform apply
 ```
-Review the plan before confirming. Verify:
+
+Перед подтверждением внимательно посмотри план. После создания проверь ноды и системные Pods:
+
 ```bash
 kubectl --kubeconfig ../../setup/.kube/kubeconfig get nodes -o wide
 kubectl --kubeconfig ../../setup/.kube/kubeconfig get pods -A
 ```
-## Destroy
+
+## Удаление кластера
+
 ```bash
 terraform destroy
 ```
-## Safety notes
-- State is local and Git-ignored; never commit it.
-- Terraform does not deploy labs or run `kubectl apply`.
-- Paths and cluster name are configurable in `main.tf`.
-- Destroy removes the cluster name recorded in state.
+
+## Важно
+
+- Terraform state хранится локально и исключён из Git. Не добавляй его в репозиторий.
+- Terraform не запускает `kubectl apply` и не устанавливает учебные приложения.
+- Имя кластера и пути заданы в `main.tf`.
+- `destroy` удалит kind-кластер, записанный в состоянии Terraform. Не меняй вручную имя между созданием и удалением.
