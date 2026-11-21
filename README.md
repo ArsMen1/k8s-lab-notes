@@ -32,6 +32,10 @@
 - `Manifests/` — учебные рабочие и намеренно сломанные Kubernetes-манифесты.
 - `labs/` — проверка знаний, сценарии инцидентов, разборы и Production Support runbooks.
 
+## Локальная лаборатория (kind + Terraform / Pulumi)
+
+Если хочешь быстро поднять локальный Kubernetes для практики, смотри **[Setup guide](setup/README.md)**. Он описывает подготовку Docker + kind и два альтернативных IaC-подхода: [Terraform](setup/terraform/README.md) или [Pulumi](setup/pulumi/README.md). Кластер создаётся локально, использует отдельный kubeconfig и не разворачивает учебные приложения автоматически.
+
 ## Быстрый старт
 
 Нужен учебный кластер: Killercoda, minikube или kind.
