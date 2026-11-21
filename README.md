@@ -36,9 +36,13 @@
 
 Если хочешь быстро поднять локальный Kubernetes для практики, смотри **[Setup guide](setup/README.md)**. Он описывает подготовку Docker + kind и два альтернативных IaC-подхода: [Terraform](setup/terraform/README.md) или [Pulumi](setup/pulumi/README.md). Кластер создаётся локально, использует отдельный kubeconfig и не разворачивает учебные приложения автоматически.
 
-## Быстрый старт
+## Быстрый старт с локальным кластером
 
-Нужен учебный кластер: Killercoda, minikube или kind.
+Самый простой путь для запуска локальной лаборатории — [Setup guide](setup/README.md) с Terraform или Pulumi. Он создаёт локальный kind-кластер, не разворачивая учебные приложения.
+
+## Ручное развёртывание манифестов в существующий кластер
+
+Для Killercoda, minikube, kind или уже работающего кластера:
 
 ```bash
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
