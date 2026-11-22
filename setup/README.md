@@ -55,3 +55,4 @@ kind delete cluster --name k8s-lab --kubeconfig .kube/kubeconfig
 ``
 
 Удаление кластера уничтожит локальные Kubernetes-ресурсы в нём.
+> **Windows:** ручной запуск `kind` подходит для PowerShell. Команды IaC в Terraform/Pulumi используют Bash-синтаксис (`mkdir -p`, `$()`), поэтому запускай их из WSL2 с настроенной интеграцией Docker Desktop, а не из native CMD/PowerShell. Этот путь пока не проверен на runtime.
