@@ -1,4 +1,5 @@
 # Traefik Helm chart values for the local kind cluster.
+# The IngressClass name is traefik, matching Manifests/ingress/ingress.yaml.
 # Chart version is pinned in the setup/ingress/README.md install command.
 service:
   spec:
