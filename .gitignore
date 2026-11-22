@@ -19,3 +19,6 @@ setup/pulumi/node_modules/
 setup/pulumi/bin/
 setup/pulumi/Pulumi.*.yaml
 setup/pulumi/.pulumi/
+
+# Local TLS artifacts for the Ingress lab (private keys/certificates)
+.local-tls/
