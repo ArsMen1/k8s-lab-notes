@@ -1,16 +1,16 @@
 # Ingress + TLS end-to-end lab
 
-Это backend + Service + Ingress манифесты и локальный self-signed TLS. Для маршрутизации требуется уже установленный Ingress Controller и соответствующий IngressClass. Контроллеры зависят от дистрибутива и инфраструктуры, поэтому здесь не закреплён один vendor controller и не заявляется его установка.
+Это backend + Service + Ingress манифесты и локальный self-signed TLS. Для маршрутизации требуется Ingress Controller и соответствующий IngressClass.
 
-## Prerequisites
+## Local kind: Traefik
 
-Для Minikube один конкретный вариант controller: `minikube addons enable ingress`, затем дождись Pod в namespace ingress-nginx и проверь `kubectl get ingressclass`. У Minikube должен быть доступен адрес `minikube ip`. Для других кластеров установи совместимый controller по официальной инструкции его проекта.
+Для локального кластера kind из репозитория есть [отдельная полноценная инструкция по Traefik + TLS](../../setup/ingress/README.md): установка pinned Helm chart, host port mappings 80/443, сертификат, проверки HTTP/HTTPS и cleanup. В этом варианте манифест Ingress использует класс `traefik`.
 
-    kubectl get ingressclass
-    kubectl get nodes
-    kubectl config current-context
+## Other environments
 
-Выбери существующий IngressClass и впиши его имя в ingress.yaml. Убедись, что controller доступен из среды, где будешь выполнять curl. Если контроллера нет, установи выбранную реализацию по её официальной инструкции в disposable cluster.
+Для Minikube один конкретный вариант controller: `minikube addons enable ingress`, затем дождись Pod в namespace ingress-nginx и проверь `kubectl get ingressclass`. У Minikube должен быть доступен адрес `minikube ip`.
+
+Перед применением в другом кластере проверь существующий IngressClass и измени `spec.ingressClassName` в `ingress.yaml` на имя доступного класса (например, `nginx` для стандартного Minikube addon). Убедись, что controller доступен из среды, где будешь выполнять curl. Если контроллера нет, установи выбранную реализацию по её официальной инструкции в disposable cluster.
 
 ## Apply backend
 
@@ -32,7 +32,7 @@
     kubectl get ingress -n lab-p1-ingress -o wide
     kubectl describe ingress web -n lab-p1-ingress
 
-Проверка зависит от адреса controller. Для локального теста добавь app.lab.test в hosts/используй curl --resolve:
+Проверка зависит от адреса controller. Для локального kind сценария смотри отдельную инструкцию; для другого кластера используй его адрес и Host header:
 
     curl -k --resolve app.lab.test:443:<controller-address> https://app.lab.test/
 
