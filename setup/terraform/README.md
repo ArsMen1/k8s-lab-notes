@@ -35,3 +35,4 @@ terraform destroy
 - Terraform не запускает `kubectl apply` и не устанавливает учебные приложения.
 - Имя кластера и пути заданы в `main.tf`.
 - `destroy` удалит kind-кластер, записанный в состоянии Terraform. Не меняй вручную имя между созданием и удалением.
+> **Windows:** команды `local-exec` используют Bash-синтаксис. Запускай Terraform из WSL2 с настроенной интеграцией Docker Desktop; native CMD/PowerShell не поддерживается этим скриптом.
