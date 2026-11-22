@@ -51,7 +51,7 @@ kubectl get pods -A
 Удаляй кластер командой выбранного инструмента из его инструкции. Либо вручную:
 
 ```bash
-kind delete cluster --name k8s-lab
+kind delete cluster --name k8s-lab --kubeconfig .kube/kubeconfig
 ``
 
 Удаление кластера уничтожит локальные Kubernetes-ресурсы в нём.
