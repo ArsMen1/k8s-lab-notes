@@ -1,0 +1,29 @@
+# Traefik Helm chart values for the local kind cluster.
+# Chart version is pinned in the setup/ingress/README.md install command.
+service:
+  spec:
+    type: NodePort
+
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: traefik
+
+providers:
+  kubernetesIngress:
+    enabled: true
+    ingressClass: traefik
+
+ports:
+  web:
+    port: 8000
+    exposedPort: 80
+    nodePort: 30081
+    expose:
+      default: true
+  websecure:
+    port: 8443
+    exposedPort: 443
+    nodePort: 30443
+    expose:
+      default: true
