@@ -5,7 +5,16 @@ name: k8s-lab
 nodes:
   - role: control-plane
     extraPortMappings:
+      # Existing NodePort access for app labs: localhost:8080 -> 30080.
       - containerPort: 30080
         hostPort: 8080
+        protocol: TCP
+      # Traefik Ingress access: localhost:80 -> NodePort 30081.
+      - containerPort: 30081
+        hostPort: 80
+        protocol: TCP
+      # Traefik HTTPS access: localhost:443 -> NodePort 30443.
+      - containerPort: 30443
+        hostPort: 443
         protocol: TCP
   - role: worker
