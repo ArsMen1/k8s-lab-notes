@@ -16,7 +16,7 @@
 
 ### Deployment (Деплоймент)
 
-Умная обертка над ReplicaSet для stateless-приложений. Умеет делать **Rolling Update** (обновление без простоя) и **Rollback** (откат версии).
+Умная обертка над ReplicaSet для stateless-приложений. Умеет делать **Rolling Update** (постепенную замену Pod) и **Rollback** (откат версии). Rolling Update сам по себе не гарантирует отсутствие простоя: доступность зависит от readiness probes, числа реплик, capacity, `maxUnavailable` / `maxSurge` и поведения приложения.
 
 * **Иерархия**: Deployment -> ReplicaSet -> Pods.
 * Детали обновлений: [[rolling-update]]

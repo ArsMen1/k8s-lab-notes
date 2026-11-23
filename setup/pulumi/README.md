@@ -36,3 +36,4 @@ pulumi destroy
 - Используется отдельный kubeconfig, основной конфиг kubectl не заменяется.
 - Учебные приложения автоматически не устанавливаются.
 - State Pulumi хранится локально — не добавляй его в Git.
+> **Windows:** команды Pulumi Command используют Bash-синтаксис. Запускай Pulumi из WSL2 с настроенной интеграцией Docker Desktop; native CMD/PowerShell не поддерживается этим скриптом.

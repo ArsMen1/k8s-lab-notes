@@ -15,8 +15,10 @@ setup/.kube/
 setup/terraform/.terraform/
 setup/terraform/terraform.tfstate
 setup/terraform/terraform.tfstate.*
-setup/terraform/.terraform.lock.hcl
 setup/pulumi/node_modules/
 setup/pulumi/bin/
 setup/pulumi/Pulumi.*.yaml
 setup/pulumi/.pulumi/
+
+# Local TLS artifacts for the Ingress lab (private keys/certificates)
+.local-tls/

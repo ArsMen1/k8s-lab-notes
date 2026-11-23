@@ -26,13 +26,14 @@ resource "null_resource" "kind_cluster" {
   triggers = {
     cluster_name = var.cluster_name
     config_hash = filesha256(var.kind_config_path)
+    kubeconfig_path = var.kubeconfig_path
   }
   provisioner "local-exec" {
     command = "mkdir -p \"$(dirname '${var.kubeconfig_path}')\" && kind create cluster --name '${var.cluster_name}' --config '${var.kind_config_path}' --kubeconfig '${var.kubeconfig_path}'"
   }
   provisioner "local-exec" {
     when = destroy
-    command = "kind delete cluster --name '${self.triggers.cluster_name}'"
+    command = "kind delete cluster --name '${self.triggers.cluster_name}' --kubeconfig '${self.triggers.kubeconfig_path}'"
   }
 }
 output "cluster_name" { value = var.cluster_name }
