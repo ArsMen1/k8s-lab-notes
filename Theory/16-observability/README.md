@@ -22,6 +22,12 @@ Prometheus собирает time series через scrape targets и exporters/i
 
 Alert rule должен иметь проверенное выражение, severity/owner, actionable summary, описание impact и ссылку на runbook. Используй разумный for, чтобы не реагировать на transient noise. Не алерти только на CPU 80% без связи с impact: комбинируй saturation с latency/errors.
 
+### Практическое обучение Grafana
+
+Grafana выделена в отдельный guide: [как читать dashboard, использовать Explore, менять time range, фильтровать labels и расследовать инциденты](grafana-guide.md).
+
+Ключевой порядок анализа сервиса: **Rate → Errors → Duration**, затем разрезы по service/route/pod/node и корреляция с инфраструктурными метриками. No data не считай нулём; не делай root cause по одной панели.
+
 ## Logs и traces
 
 Централизуй stdout/stderr и системные события; добавляй timestamp, severity, service, environment, trace/request ID. Не логируй токены, пароли, приватные ключи и персональные данные. kubectl logs не является долговременным архивом.
@@ -36,6 +42,10 @@ Distributed trace связывает spans между сервисами и по
 4. Используй logs/events/traces для проверки гипотез.
 5. Зафиксируй baseline до изменения.
 6. После mitigation проверь customer impact, а не только Ready Pod.
+
+## Практика
+
+- [Grafana triage: найти причину деградации по графикам](../../labs/troubleshooting/grafana-triage.md)
 
 Связано: [Production Support](../../labs/production-support/README.md), [P1 labs](../../labs/fundamentals-p1/README.md), [HPA](../15-hpa/README.md).
 Проекты: [Prometheus](https://prometheus.io/docs/introduction/overview/), [Grafana](https://grafana.com/docs/grafana/latest/), [OpenTelemetry](https://opentelemetry.io/docs/).
