@@ -18,6 +18,10 @@ Scheduler планирует по requests, а не по текущему пот
 
 Чем Capacity отличается от Allocatable, системные резервы, scheduler accounting по requests и диагностика Pending/Node pressure: [Node Capacity, Allocatable и системные резервы](node-capacity-allocatable.md).
 
+## Disk I/O и DiskPressure
+
+Диагностика медленного storage, IOPS, throughput, latency, inode, ephemeral storage, DiskPressure и конкуренции за I/O: [Disk I/O, IOPS, latency и DiskPressure](disk-io-performance.md).
+
 ## QoS classes
 
 - Guaranteed: для каждого контейнера заданы CPU и memory requests и limits, причём requests равны limits для обоих ресурсов. Учитывай init containers и правила целевой версии.
