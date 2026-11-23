@@ -25,6 +25,12 @@
 - [Memory incident: OOMKilled или Node MemoryPressure](memory-oom.md)
 - [Scaling incident: replicas выросли, а сервис стал хуже](scaling-worsens.md)
 
+## Network & DNS incidents
+
+- [DNS incident: Service name не резолвится из Pod](dns-failure.md)
+- [Service connectivity: DNS есть, но TCP connection не устанавливается](service-connectivity.md)
+- [NetworkPolicy incident: policy блокирует DNS или application traffic](networkpolicy-block.md)
+
 ## Node и storage incidents
 
 - [Node NotReady](node-notready.md)
