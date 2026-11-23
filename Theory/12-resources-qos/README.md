@@ -6,6 +6,10 @@ requests.cpu/memory — ресурсы, которые scheduler учитыва�
 
 Scheduler планирует по requests, а не по текущему потреблению и не по limits как основному критерию. Низкие requests относительно реальной нагрузки увеличивают риск node pressure.
 
+## CPU throttling и contention
+
+Подробный разбор механизма CFS quota, отличий throttling от node-level contention, симптомов, метрик Prometheus и порядка диагностики: [CPU throttling и CPU contention](cpu-throttling.md).
+
 ## QoS classes
 
 - Guaranteed: для каждого контейнера заданы CPU и memory requests и limits, причём requests равны limits для обоих ресурсов. Учитывай init containers и правила целевой версии.
