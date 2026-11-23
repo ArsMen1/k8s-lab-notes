@@ -6,6 +6,7 @@
 
 - [CrashLoopBackOff](crashloopbackoff.md)
 - [Pod Running, но приложение недоступно](pod-running-but-unreachable.md)
+- [Deployment успешен, но сервис сломан](deployment-success-service-broken.md)
 - [Probe failures: Readiness, Liveness, Startup](probe-failures.md)
 - [Container exit codes и lifecycle](container-exit-codes.md)
 - [ConfigMap changes не применяются](configmap-not-updated.md)
