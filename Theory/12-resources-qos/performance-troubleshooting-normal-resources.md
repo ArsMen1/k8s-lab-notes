@@ -143,7 +143,7 @@ Retries способны усиливать инцидент: при дегра�
 
 Не делай вывод о GC только по тому, что heap близок к limit. Сопоставляй pauses и latency конкретных запросов по времени.
 
-Подробнее: [JVM GC & heap diagnostics — дополни отдельной заметкой при расширении трека].
+Подробнее: [JVM Heap, GC и Stop-the-World pauses](jvm-heap-gc-stw.md) и [Thread dumps, deadlocks и диагностика зависших Java-приложений](thread-dumps-deadlocks.md).
 
 ## 8. Kubernetes: что может помочь, а что не покажет
 
