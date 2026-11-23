@@ -45,6 +45,7 @@ Distributed trace связывает spans между сервисами и по
 
 ## Практика
 
+- [Grafana практикум: panels, Explore, PromQL, variables и incident investigation](grafana-practicum.md)
 - [Grafana triage: найти причину деградации по графикам](../../labs/troubleshooting/grafana-triage.md)
 
 Связано: [Production Support](../../labs/production-support/README.md), [P1 labs](../../labs/fundamentals-p1/README.md), [HPA](../15-hpa/README.md).
