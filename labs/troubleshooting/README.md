@@ -30,6 +30,7 @@
 
 ## Observability & monitoring incidents
 - [Grafana triage: найти причину деградации по графикам](grafana-triage.md)
+- [Grafana practical incident: dashboard, Explore, PromQL, panels, variables и alerting](grafana-practical-incident.md)
 
 ## Node и storage incidents
 - [Node NotReady](node-notready.md)
