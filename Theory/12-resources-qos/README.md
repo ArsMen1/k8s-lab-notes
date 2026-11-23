@@ -14,6 +14,10 @@ Scheduler планирует по requests, а не по текущему пот
 
 Разница между RSS, working set, page cache и memory cgroup usage, диагностика роста памяти и OOM: [Memory accounting](memory-accounting.md).
 
+## Node Capacity и Allocatable
+
+Чем Capacity отличается от Allocatable, системные резервы, scheduler accounting по requests и диагностика Pending/Node pressure: [Node Capacity, Allocatable и системные резервы](node-capacity-allocatable.md).
+
 ## QoS classes
 
 - Guaranteed: для каждого контейнера заданы CPU и memory requests и limits, причём requests равны limits для обоих ресурсов. Учитывай init containers и правила целевой версии.
