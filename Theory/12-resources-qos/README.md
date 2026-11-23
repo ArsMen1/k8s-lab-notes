@@ -62,3 +62,7 @@ kubectl top требует работающий metrics pipeline и показы
 Связанные материалы: [Scheduling](../03-scheduling/scheduling-taints-affinity.md), [Resource manifests](../../Manifests/resources/README.md), [P0 labs](../../labs/fundamentals-p0/README.md).
 
 Официально: [Resource management](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/), [Node-pressure eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/).
+
+## JVM Heap, Garbage Collection и Stop-the-World pauses
+
+Подробный разбор heap, allocation rate, GC, STW pauses, GC metrics/logs и расследования latency-инцидентов в Java workloads: [JVM Heap, GC и Stop-the-World](jvm-heap-gc-stw.md).
