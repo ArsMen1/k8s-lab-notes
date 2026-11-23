@@ -66,3 +66,7 @@ kubectl top требует работающий metrics pipeline и показы
 ## JVM Heap, Garbage Collection и Stop-the-World pauses
 
 Подробный разбор heap, allocation rate, GC, STW pauses, GC metrics/logs и расследования latency-инцидентов в Java workloads: [JVM Heap, GC и Stop-the-World](jvm-heap-gc-stw.md).
+
+## Thread dumps, deadlocks и зависшие Java-приложения
+
+Практический разбор состояний потоков JVM, снятия thread dumps, BLOCKED/WAITING/RUNNABLE, deadlocks, lock contention и thread pool exhaustion: [Thread dumps и deadlocks](thread-dumps-deadlocks.md).
