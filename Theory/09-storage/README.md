@@ -50,3 +50,20 @@ StorageClass может разрешать увеличение через allow
 Связанные материалы: [StatefulSet](../10-statefulset/README.md), [Storage manifests](../../Manifests/storage/README.md), [P0 labs](../../labs/fundamentals-p0/README.md).
 
 Официально: [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/), [Storage Classes](https://kubernetes.io/docs/concepts/storage/storage-classes/), [CSI](https://kubernetes.io/docs/concepts/storage/volumes/#csi).
+
+## Troubleshooting: mount, permissions и attach/detach
+
+| Симптом | Что проверить сначала |
+|---|---|
+| PVC `Pending` | PVC Events, StorageClass, provisioner, PV, binding mode и topology |
+| Pod `ContainerCreating` | Pod Events; отдели `FailedMount` от `FailedAttachVolume` |
+| `FailedAttachVolume` / attach timeout | Node, VolumeAttachment (если применимо), CSI controller, attachment limits и backend state |
+| `FailedDetachVolume` / volume busy | прежняя Node, workload, CSI и подтверждение backend detach; не force detach вслепую |
+| Mount успешен, `Permission denied` | UID/GID процесса, numeric ownership, directory mode, `runAsUser`, `runAsGroup`, `fsGroup`, ACL/backend |
+| Read-only filesystem | mount options, filesystem/backend status и попытка записи в правильный path |
+| `No space left` | `df -h`, `df -i`, volume quota, рост файлов и inode; различай filesystem и node ephemeral storage |
+| Данные исчезли/не сохранились | PVC/PV lifecycle, reclaim policy, mount path приложения, backup/restore и фактический backend |
+
+Начинай с Events и read-only evidence. PVC `Bound` подтверждает binding, но не гарантирует attach, mount, доступ по permissions или корректность данных. Не удаляй PVC/PV и не делай force detach/chown/chmod без понимания последствий и согласования.
+
+Практика: [Permission denied на volume](../../labs/troubleshooting/storage-permissions.md) · [Volume attach/detach зависает](../../labs/troubleshooting/storage-attach-detach.md).
