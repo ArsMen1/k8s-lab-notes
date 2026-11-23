@@ -24,6 +24,7 @@
 - [Java API: latency, thread pool и исчерпание ресурсов](java-api-thread-pool-exhaustion.md)
 - [Redis: cache hit ratio падает, DB перегружается cache misses](redis-cache-miss-storm.md)
 - [PostgreSQL: connection exhaustion при нормальном CPU](postgresql-connection-exhaustion.md)
+- [PostgreSQL locks & deadlocks: запросы ждут, CPU низкий](postgresql-locks-deadlocks.md)
 - [HTTP 502/504: диагностика цепочки микросервисов](http-502-504-microservice-chain.md)
 
 ## Resources & performance incidents
