@@ -13,22 +13,3 @@
 
 ## Связанные заметки:
 * Карта обучения: [[what-is-kubernetes]]
-
-## Практические troubleshooting labs (Production Support)
-
-Первая тройка практических упражнений:
-- [ ] [CrashLoopBackOff](../../labs/troubleshooting/crashloopbackoff.md) — предыдущие логи, Events, рестарты, гипотезы и безопасная проверка восстановления.
-- [ ] [Service без ready endpoints](../../labs/troubleshooting/service-no-endpoints.md) — labels/selectors, readiness, Service ports и EndpointSlice.
-- [ ] [PVC Pending](../../labs/troubleshooting/pvc-pending.md) — StorageClass, PV/PVC, CSI, topology и `WaitForFirstConsumer`.
-
-Следующие рекомендуемые практические темы:
-- [ ] OOMKilled — termination reason, предыдущие логи, memory metrics, requests/limits.
-- [ ] Failed readiness/liveness probes — влияние probe на traffic и рестарты.
-- [ ] Pod Pending — scheduler events, requests, taints/tolerations, affinity и quota.
-- [ ] CoreDNS failure — проверка DNS из Pod и компонентов cluster DNS.
-- [ ] NetworkPolicy blocking — source/destination policy, DNS egress, CNI support.
-- [ ] Ingress 502/503 и TLS incident — controller, backend endpoints, certificate/Secret.
-- [ ] CPU throttling и latency — метрики, saturation и корреляция.
-- [ ] HPA не масштабирует — metrics API, requests, target, capacity.
-- [ ] Failed rollout / rollback — безопасная диагностика релиза и recovery.
-- [ ] Multi-symptom production incident — timeline, impact, evidence, root cause, mitigation, validation, prevention.
