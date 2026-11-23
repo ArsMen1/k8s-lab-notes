@@ -22,6 +22,10 @@ Scheduler планирует по requests, а не по текущему пот
 
 Диагностика медленного storage, IOPS, throughput, latency, inode, ephemeral storage, DiskPressure и конкуренции за I/O: [Disk I/O, IOPS, latency и DiskPressure](disk-io-performance.md).
 
+## Performance troubleshooting при нормальных ресурсах
+
+Разбор задержек, вызванных connection/thread pools, очередями, locks, retries и downstream dependencies, когда CPU, RAM и Disk не показывают явного bottleneck: [Performance troubleshooting: ресурсы в норме, приложение медленное](performance-troubleshooting-normal-resources.md).
+
 ## QoS classes
 
 - Guaranteed: для каждого контейнера заданы CPU и memory requests и limits, причём requests равны limits для обоих ресурсов. Учитывай init containers и правила целевой версии.
