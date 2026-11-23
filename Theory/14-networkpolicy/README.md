@@ -26,6 +26,10 @@ DNS обычно требует разрешить UDP и TCP 53 к CoreDNS Pod 
 5. Только после проверки включай default deny.
 6. Наблюдай flow logs/metrics, если CNI их предоставляет.
 
+## Практические troubleshooting labs
+
+- [NetworkPolicy incident: policy блокирует DNS или application traffic](../../labs/troubleshooting/networkpolicy-block.md)
+
 ## Диагностика
 
     kubectl get networkpolicy -A
