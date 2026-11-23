@@ -19,6 +19,12 @@
 
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
+## Resources & performance incidents
+
+- [CPU throttling: latency выросла, CPU выглядит невысоким](cpu-throttling.md)
+- [Memory incident: OOMKilled или Node MemoryPressure](memory-oom.md)
+- [Scaling incident: replicas выросли, а сервис стал хуже](scaling-worsens.md)
+
 ## Node и storage incidents
 
 - [Node NotReady](node-notready.md)
