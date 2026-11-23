@@ -4,28 +4,33 @@
 
 ## Практические troubleshooting labs
 
-- [ ] Как диагностировать и исправить `CrashLoopBackOff`, используя текущие и предыдущие логи контейнера?
+- [ ] Как диагностировать и исправить CrashLoopBackOff, используя текущие и предыдущие логи контейнера?
 - [ ] Почему Kubernetes Service может не иметь endpoints и как найти причину (labels/selectors, readiness, порты)?
-- [ ] Почему PVC остаётся в состоянии `Pending` и как диагностировать StorageClass, provisioner и PV/PVC?
+- [ ] Почему PVC остаётся в Pending и как диагностировать StorageClass, provisioner и PV/PVC?
 
 ## Следующие темы
 
-- [ ] Как диагностировать `ImagePullBackOff` и проверить доступ к registry, image tag и imagePullSecrets?
+- [ ] Как диагностировать ImagePullBackOff и проверить доступ к registry, image tag и imagePullSecrets?
 - [ ] Как отличить отказ Readiness Probe от Liveness Probe и как исправить их без лишних рестартов?
-- [ ] Почему Pod остаётся в `Pending` и как различать нехватку ресурсов, taints/tolerations и scheduling constraints?
-- [ ] Как безопасно диагностировать `OOMKilled`, memory pressure и CPU throttling?
-- [ ] Как расследовать `FailedMount`, CSI-ошибки и проблемы с доступом к persistent storage?
-- [ ] Как диагностировать `NodeNotReady`, `DiskPressure` и другие проблемы состояния ноды?
+- [ ] Почему Pod остаётся в Pending и как различать нехватку ресурсов, taints/tolerations и scheduling constraints?
+- [ ] Как безопасно диагностировать OOMKilled, memory pressure и CPU throttling?
+- [ ] Как расследовать FailedMount, CSI-ошибки и проблемы с доступом к persistent storage?
+- [ ] Как диагностировать NodeNotReady, DiskPressure и другие проблемы состояния ноды?
 - [ ] Как расследовать сбои CoreDNS и отличать DNS-проблему от сетевой или прикладной?
 - [ ] Как NetworkPolicy может блокировать трафик между Pod и как безопасно проверить её влияние?
 - [ ] Как расследовать Ingress 404/502/503, TLS-ошибки и проблемы связи Ingress → Service → endpoints?
 - [ ] Почему HPA не масштабирует workload и как проверять Metrics API, requests и поведение autoscaling?
 - [ ] Как диагностировать высокую latency, отделяя CPU, память, сеть и сбои зависимостей?
 - [ ] Как безопасно расследовать неудачный Deployment rollout и выполнять rollback?
-- [ ] Как проверять RBAC-ошибки `Forbidden` через субъект, verb, resource и `kubectl auth can-i`?
+- [ ] Как проверять RBAC-ошибки Forbidden через субъект, verb, resource и kubectl auth can-i?
 - [ ] Как расследовать исчерпание connection pool или отказ внешней зависимости, когда Kubernetes-компоненты выглядят исправными?
 - [ ] Как собирать Logs, Metrics и Events в единое расследование и определять первопричину, а не только симптомы?
 - [ ] Как оформлять incident report по схеме Symptoms → Root Cause → Resolution → Prevention?
+- [ ] Как в Grafana правильно выставить time range, datasource и variables перед анализом?
+- [ ] Как читать Rate, Errors и Duration, сравнивать p50/p95/p99 и отличать impact от шума?
+- [ ] Как использовать Explore и фильтры labels для drill-down до service, pod, node или endpoint?
+- [ ] Как отличать No data от нулевого значения и расследовать scrape/datasource failure?
+- [ ] Как сопоставлять графики с deployment/config changes, baseline и независимыми evidence?
 
 ## Дополнительные вопросы
 
