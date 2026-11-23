@@ -25,6 +25,11 @@
 - [ ] Как проверять RBAC-ошибки Forbidden через субъект, verb, resource и kubectl auth can-i?
 - [ ] Как расследовать исчерпание connection pool или отказ внешней зависимости, когда Kubernetes-компоненты выглядят исправными?
 - [ ] Как собирать Logs, Metrics и Events в единое расследование и определять первопричину, а не только симптомы?
+- [ ] Как ориентироваться в Grafana: datasource, dashboard, panels, time range, refresh и variables?
+- [ ] Как использовать Explore и PromQL для проверки метрик, labels, rate и histogram quantiles?
+- [ ] Как создать корректные panels (units, legends, thresholds) и dashboard variables?
+- [ ] Как делать drill-down и коррелировать метрики с deploy/config changes, logs и traces?
+- [ ] Как устроены alert rules, pending/firing, contact points и notification policies, и как безопасно тестировать alert?
 - [ ] Как оформлять incident report по схеме Symptoms → Root Cause → Resolution → Prevention?
 - [ ] Как в Grafana правильно выставить time range, datasource и variables перед анализом?
 - [ ] Как читать Rate, Errors и Duration, сравнивать p50/p95/p99 и отличать impact от шума?
