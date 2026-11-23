@@ -14,9 +14,9 @@
 
 ## Выбери инструмент
 
-- [Terraform — запуск кластера](terraform/README.md)
-- [Pulumi — запуск кластера на TypeScript](pulumi/README.md)
 - [Terraform и Pulumi: сравнение](terraform-vs-pulumi.md)
+- [Pulumi — запуск кластера на TypeScript](pulumi/README.md)
+- [Terraform — запуск кластера](terraform/README.md)
 
 ## Запуск вручную через kind
 
