@@ -24,5 +24,7 @@
 - [Node NotReady](node-notready.md)
 - [DiskPressure](diskpressure.md)
 - [FailedMount / FailedAttachVolume](failedmount.md)
+- [Permission denied на volume](storage-permissions.md)
+- [Volume attach/detach зависает](storage-attach-detach.md)
 
 Для каждого инцидента сохрани timeline, impact, Events, состояние объекта, подтверждённый root cause, mitigation, validation и prevention. Не делай вывод по одному симптому. Перед командами проверяй kubectl context и namespace; не выводи Secret/credentials.
