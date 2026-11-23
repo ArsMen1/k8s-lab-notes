@@ -18,9 +18,10 @@
 ## Pod troubleshooting reference
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
-## Java / application incidents
+## Application & dependency incidents
 - [Kafka: consumer lag растёт, сообщения не успевают обрабатываться](kafka-consumer-lag.md)
 - [Java API: latency, thread pool и исчерпание ресурсов](java-api-thread-pool-exhaustion.md)
+- [Redis: cache hit ratio падает, DB перегружается cache misses](redis-cache-miss-storm.md)
 
 ## Resources & performance incidents
 - [CPU throttling: latency выросла, CPU выглядит невысоким](cpu-throttling.md)
