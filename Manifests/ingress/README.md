@@ -24,7 +24,9 @@
 Не коммить private key. Создай self-signed сертификат локально:
 
     openssl req -x509 -nodes -days 2 -newkey rsa:2048 -keyout /tmp/lab-p1.key -out /tmp/lab-p1.crt -subj "/CN=app.lab.test" -addext "subjectAltName=DNS:app.lab.test"
-    kubectl create secret tls app-tls -n lab-p1-ingress --cert=/tmp/lab-p1.crt --key=/tmp/lab-p1.key
+    kubectl create secret tls app-tls -n lab-p1-ingress \
+      --cert=/tmp/lab-p1.crt --key=/tmp/lab-p1.key \
+      --dry-run=client -o yaml | kubectl apply -f -
 
 Затем примени Ingress:
 

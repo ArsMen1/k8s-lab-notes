@@ -87,7 +87,9 @@ openssl req -x509 -nodes -days 2 -newkey rsa:2048 \
 kubectl create secret tls app-tls \
   -n lab-p1-ingress \
   --cert=.local-tls/app.lab.test.crt \
-  --key=.local-tls/app.lab.test.key
+  --key=.local-tls/app.lab.test.key \
+  --dry-run=client -o yaml \
+  | kubectl apply -f -
 ```
 
 Не добавляй приватный ключ, сертификат или Secret в Git.
