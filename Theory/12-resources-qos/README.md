@@ -10,6 +10,10 @@ Scheduler планирует по requests, а не по текущему пот
 
 Подробный разбор механизма CFS quota, отличий throttling от node-level contention, симптомов, метрик Prometheus и порядка диагностики: [CPU throttling и CPU contention](cpu-throttling.md).
 
+## Memory accounting
+
+Разница между RSS, working set, page cache и memory cgroup usage, диагностика роста памяти и OOM: [Memory accounting](memory-accounting.md).
+
 ## QoS classes
 
 - Guaranteed: для каждого контейнера заданы CPU и memory requests и limits, причём requests равны limits для обоих ресурсов. Учитывай init containers и правила целевой версии.
