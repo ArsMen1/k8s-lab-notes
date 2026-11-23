@@ -46,6 +46,10 @@ Service типа LoadBalancer запрашивает внешний баланс
 
 Ingress — HTTP/HTTPS routing API, а не Service type. Ingress Controller получает внешний трафик через собственный способ публикации (например, LoadBalancer, NodePort или host networking) и проксирует запрос на backend Service. Не предполагай, что каждый Ingress Controller обязательно использует NodePort.
 
+## Практическая troubleshooting lab
+
+- [Service connectivity: DNS есть, но TCP connection не устанавливается](../../labs/troubleshooting/service-connectivity.md)
+
 ## 4. Диагностика по слоям
 
 1. **Service:** правильны ли namespace, selector, port и targetPort?
