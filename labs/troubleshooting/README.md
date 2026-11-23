@@ -18,6 +18,9 @@
 ## Pod troubleshooting reference
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
+## Java / application incidents
+- [Java API: latency, thread pool и исчерпание ресурсов](java-api-thread-pool-exhaustion.md)
+
 ## Resources & performance incidents
 - [CPU throttling: latency выросла, CPU выглядит невысоким](cpu-throttling.md)
 - [Memory incident: OOMKilled или Node MemoryPressure](memory-oom.md)
