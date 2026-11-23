@@ -237,4 +237,4 @@ kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
 - [Node Capacity, Allocatable и системные резервы](node-capacity-allocatable.md)
 - [Disk I/O, IOPS, latency и DiskPressure](disk-io-performance.md)
 - [Performance troubleshooting при нормальных ресурсах](performance-troubleshooting-normal-resources.md)
-- [Java Garbage Collection (официальная документация Java)](https://docs.oracle.com/en/java/javase/
+- [Garbage Collection Tuning Guide (Oracle Java 21)](https://docs.oracle.com/en/java/javase/21/gctuning/)
