@@ -22,6 +22,9 @@
 ## Node и storage incidents
 
 - [Node NotReady](node-notready.md)
+- [Pod Pending — scheduler не находит Node](scheduling-pending.md)
+- [Node maintenance: cordon/drain](node-maintenance.md)
+- [PDB блокирует drain](pdb-drain.md)
 - [DiskPressure](diskpressure.md)
 - [FailedMount / FailedAttachVolume](failedmount.md)
 - [Permission denied на volume](storage-permissions.md)
