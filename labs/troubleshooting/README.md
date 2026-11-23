@@ -5,9 +5,16 @@
 ## Workload и сервисы
 
 - [CrashLoopBackOff](crashloopbackoff.md)
+- [Pod Running, но приложение недоступно](pod-running-but-unreachable.md)
+- [Probe failures: Readiness, Liveness, Startup](probe-failures.md)
+- [Container exit codes и lifecycle](container-exit-codes.md)
 - [Service без ready endpoints](service-no-endpoints.md)
 - [PVC Pending](pvc-pending.md)
 - [ImagePullBackOff](imagepullbackoff.md)
+
+## Pod troubleshooting reference
+
+- [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
 ## Node и storage incidents
 
