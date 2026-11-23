@@ -16,23 +16,22 @@
 - [ImagePullBackOff](imagepullbackoff.md)
 
 ## Pod troubleshooting reference
-
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
 ## Resources & performance incidents
-
 - [CPU throttling: latency выросла, CPU выглядит невысоким](cpu-throttling.md)
 - [Memory incident: OOMKilled или Node MemoryPressure](memory-oom.md)
 - [Scaling incident: replicas выросли, а сервис стал хуже](scaling-worsens.md)
 
 ## Network & DNS incidents
-
-- [DNS incident: Service name не резолвится из Pod](dns-failure.md)
+- [DNS incident: Service name не резолбится из Pod](dns-failure.md)
 - [Service connectivity: DNS есть, но TCP connection не устанавливается](service-connectivity.md)
 - [NetworkPolicy incident: policy блокирует DNS или application traffic](networkpolicy-block.md)
 
-## Node и storage incidents
+## Observability & monitoring incidents
+- [Grafana triage: найти причину деградации по графикам](grafana-triage.md)
 
+## Node и storage incidents
 - [Node NotReady](node-notready.md)
 - [Pod Pending — scheduler не находит Node](scheduling-pending.md)
 - [Node maintenance: cordon/drain](node-maintenance.md)
