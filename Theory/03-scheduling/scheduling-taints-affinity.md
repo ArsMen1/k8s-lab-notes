@@ -57,3 +57,27 @@ kubectl top показывает текущие метрики и не заме�
 - [Production Support practicum](../../labs/production-support/README.md)
 - [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 - [Pod topology spread constraints](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/)
+
+## 4. Node maintenance и voluntary disruption
+
+Перед обслуживанием Node оцени workloads, доступную capacity, PDB, local storage, affinity/topology и unmanaged Pods.
+
+- `cordon` помечает Node unschedulable для новых обычных Pods; существующие Pods остаются.
+- `drain` эвакуирует Pods через механизм eviction, учитывая PDB и особенности DaemonSets/Pod.
+- PDB ограничивает voluntary disruptions, но не защищает от всех отказов, и не гарантирует успешный rescheduling.
+- После обслуживания Node нужно вернуть в schedulable состояние и проверить workloads, system Pods, endpoints и alerts.
+
+**Read-only подготовка:**
+
+```bash
+kubectl get nodes -o wide
+kubectl describe node <node>
+kubectl get pods -A -o wide --field-selector spec.nodeName=<node>
+kubectl get pdb -A
+kubectl get deploy,sts,ds -A
+kubectl get events -A --sort-by=.metadata.creationTimestamp
+```
+
+Плановые `cordon`, `drain`, `uncordon` — действия изменения. Не выполняй их без change approval, capacity assessment и проверки риска local/ephemeral data. Не добавляй `--force` или `--delete-emptydir-data` как default.
+
+Практика: [Pod Pending — scheduler](../../labs/troubleshooting/scheduling-pending.md) · [Node maintenance](../../labs/troubleshooting/node-maintenance.md) · [PDB blocks drain](../../labs/troubleshooting/pdb-drain.md).
