@@ -17,6 +17,10 @@ Pod использует nameserver из /etc/resolv.conf. При типично
 - Default — наследует DNS настройки Node.
 - None — отключает наследование и требует явной dnsConfig.
 
+## Практические troubleshooting labs
+
+- [DNS incident: Service name не резолвится из Pod](../../labs/troubleshooting/dns-failure.md)
+
 ## Диагностика
 
     kubectl get svc -n kube-system
