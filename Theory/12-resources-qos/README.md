@@ -6,6 +6,12 @@ requests.cpu/memory — ресурсы, которые scheduler учитыва�
 
 Scheduler планирует по requests, а не по текущему потреблению и не по limits как основному критерию. Низкие requests относительно реальной нагрузки увеличивают риск node pressure.
 
+## Практические resource incident labs
+
+- [CPU throttling: latency выросла, CPU выглядит невысоким](../../labs/troubleshooting/cpu-throttling.md)
+- [Memory incident: OOMKilled или Node MemoryPressure](../../labs/troubleshooting/memory-oom.md)
+- [Scaling incident: replicas выросли, а сервис стал хуже](../../labs/troubleshooting/scaling-worsens.md)
+
 ## CPU throttling и contention
 
 Подробный разбор механизма CFS quota, отличий throttling от node-level contention, симптомов, метрик Prometheus и порядка диагностики: [CPU throttling и CPU contention](cpu-throttling.md).
