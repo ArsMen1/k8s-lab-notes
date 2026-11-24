@@ -42,7 +42,7 @@ in the namespace "finance"
 kubectl config current-context
 kubectl auth whoami
 kubectl get deploy,pods -n finance -o wide
-kubectl get pod <reporting-pod> -n finance -o jsonpath='{.spec.serviceAccountName}{"\\n"}'
+kubectl get pod <reporting-pod> -n finance -o jsonpath='{.spec.serviceAccountName}{"\n"}'
 kubectl get serviceaccount reporter -n finance -o yaml
 ```
 
@@ -55,7 +55,7 @@ kubectl get serviceaccount reporter -n finance -o yaml
 
 ## 2. Разобрать authorization request
 
-Из сообщения API Server выпиши четыре поля:
+Из сообщения API Server выпиши поля:
 
 | Поле | Значение сценария |
 |---|---|
@@ -110,7 +110,7 @@ kubectl auth can-i list deployments.apps -n another-namespace \
   --as=system:serviceaccount:finance:reporter
 ```
 
-Ожидаемые результаты для синтетического сценария:
+Ожидаемые результаты для синтетического сценария при отсутствии дополнительных grants через другие RoleBinding/ClusterRoleBinding:
 
 | Проверка | Ожидается |
 |---|---|
