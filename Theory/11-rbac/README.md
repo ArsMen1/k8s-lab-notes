@@ -46,4 +46,4 @@ Kubernetes обычно использует short-lived projected ServiceAccoun
 
 При 403 зафиксируй identity, verb, resource, API group и namespace. Проверь ServiceAccount workload, subject в binding и scope. 403 может вернуть также admission webhook или внешний proxy, а не RBAC authorizer.
 
-Связанные материалы: [RBAC manifests](../../Manifests/rbac/README.md), [P0 labs](../../labs/fundamentals-p0/README.md). Официально: [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
+Практика: [RBAC Forbidden — приложение не может читать Kubernetes API](../../labs/troubleshooting/rbac-forbidden.md).\n\nСвязанные материалы: [RBAC manifests](../../Manifests/rbac/README.md), [P0 labs](../../labs/fundamentals-p0/README.md). Официально: [RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
