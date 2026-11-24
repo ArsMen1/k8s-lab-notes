@@ -143,6 +143,7 @@ kubectl auth can-i list deployments.apps -n another-namespace \
 ## Evidence — синтетический RBAC snapshot
 
 ```yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: pod-reader
@@ -154,6 +155,7 @@ rules:
 ```
 
 ```yaml
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: reporter-pod-reader
