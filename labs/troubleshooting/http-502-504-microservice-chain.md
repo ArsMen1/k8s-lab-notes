@@ -62,7 +62,7 @@ Client
 API Gateway (timeout 5s)
   |
   v
-orders-service (timeout inventory 3s; retry 1)
+orders-service (inventory client timeout/retry settings to inspect)
   |
   +----> inventory-service
   |         |
@@ -91,7 +91,7 @@ orders-service (timeout inventory 3s; retry 1)
 kubectl config current-context
 kubectl get deploy,pods,svc -n commerce -o wide
 kubectl get endpointslices -n commerce -o wide
-kubectl get events -n commerce --sort-by=.lastTimestamp
+kubectl get events -n commerce --sort-by=.metadata.creationTimestamp
 ```
 
 Уточни:
@@ -239,7 +239,7 @@ Health endpoint не заменяет test конкретного workflow. Не
 - circuit breaker state;
 - DB pool и query latency.
 
-Сравни timeout values по цепочке. Вложенные timeout и retries могут привести к тому, что одна клиентская операция запускает несколько downstream попыток, перегружая уже медленную зависимость.
+Сравни timeout values по цепочке. Вложенные timeout и retries могут привести к тому, что одна клиентская операция запускает несколько downstream попыток, перегружая уже медленную зависимость. В синтетическом trace этого сценария показана одна попытка вызова inventory; конкретные timeout/retry values для orders-service намеренно не заданы. Не предполагай наличие retry только по общей конфигурации — подтверди число попыток по logs/spans.
 
 Не увеличивай timeout как универсальное исправление: это может увеличить количество одновременно ожидающих запросов, занять threads/connections и ухудшить cascading failure. Не отключай retries без анализа — retries могут быть важны для кратковременных transient failures, но усиливать устойчивую деградацию.
 
