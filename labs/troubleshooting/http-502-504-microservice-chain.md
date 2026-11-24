@@ -218,10 +218,10 @@ kubectl get endpointslices -n commerce -l kubernetes.io/service-name=inventory-s
 kubectl get pods -n commerce --show-labels -o wide
 ```
 
-Connectivity test из approved diagnostic source, если инструменты доступны:
+Connectivity test из approved diagnostic source, если инструменты доступны. Из Pod в namespace `commerce` можно использовать короткое имя Service; из другого namespace используй FQDN с фактическим cluster domain — `cluster.local` не гарантирован:
 
 ```bash
-curl -sS -o /dev/null -w 'code=%{http_code} connect=%{time_connect} ttfb=%{time_starttransfer} total=%{time_total}\n' --max-time 6 http://inventory-service.commerce.svc.cluster.local:8080/health
+curl -sS -o /dev/null -w 'code=%{http_code} connect=%{time_connect} ttfb=%{time_starttransfer} total=%{time_total}\n' --max-time 6 http://inventory-service:8080/health
 ```
 
 Health endpoint не заменяет test конкретного workflow. Не отправляй повторные mutating requests вроде создания заказов без разрешённого тестового payload и понимания их side effects.
