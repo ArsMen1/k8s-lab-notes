@@ -32,6 +32,8 @@ kubectl delete svc checkout -n default --ignore-not-found
 
 ---
 
+**Совместимость с Ingress-стендом:** если в этом же kind-кластере установлен Traefik из `setup/ingress`, его web Service уже занимает NodePort `30081`. `Manifests/incidents/01.yaml` запрашивает тот же порт, поэтому Service не создастся из-за конфликта NodePort. Запускай эту неделю в отдельном учебном кластере без Traefik либо заранее согласуй другой свободный NodePort и соответствующий hostPort mapping. Не путай эту ошибку создания Service с учебной причиной дня 1 — несовпадающим selector.
+
 ## День 1. Шаурма не оплачивается
 
 Пятница, 10:14
