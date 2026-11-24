@@ -19,7 +19,7 @@
 ## Pod troubleshooting reference
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
-## Application & dependency incidents
+## Identity & access incidents\n\n- [RBAC Forbidden: приложение не может читать Kubernetes API](rbac-forbidden.md)\n\n## Application & dependency incidents
 - [Kafka: consumer lag растёт, сообщения не успевают обрабатываться](kafka-consumer-lag.md)
 - [Java API: latency, thread pool и исчерпание ресурсов](java-api-thread-pool-exhaustion.md)
 - [Redis: cache hit ratio падает, DB перегружается cache misses](redis-cache-miss-storm.md)
