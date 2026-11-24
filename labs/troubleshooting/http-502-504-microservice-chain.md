@@ -243,24 +243,26 @@ Health endpoint не заменяет test конкретного workflow. Не
 
 Не увеличивай timeout как универсальное исправление: это может увеличить количество одновременно ожидающих запросов, занять threads/connections и ухудшить cascading failure. Не отключай retries без анализа — retries могут быть важны для кратковременных transient failures, но усиливать устойчивую деградацию.
 
-## 8. Root cause (открой после расследования)
+## 8. Evidence-bounded conclusion (открой после расследования)
 
 <details>
-<summary>Скрытый spoiler: предполагаемая первопричина</summary>
+<summary>Скрытый spoiler: что подтверждено и что ещё неизвестно</summary>
 
-В inventory-service изменилась нагрузка на inventory DB после релиза: запрос проверки наличия стал выполнять медленный запрос из-за регрессии/неэффективного плана. DB query p95 вырос до ~4.7s. Inventory HTTP handler ждает DB, orders-service ждёт inventory, Gateway достигает своего 5-second deadline и отдаёт 504.
+Для 504 подтверждённый bottleneck находится на пути inventory → DB: span inventory DB занимает около 4.72s, orders-service ждёт inventory, а Gateway достигает 5-second deadline. Это объясняет timeout в цепочке.
 
-Часть 502 возникает при закрытии/сбросе upstream соединения в момент истечения deadline/прерывания обработчика. Подтверждай такие статусы по конкретным gateway logs; не выводи это из таблицы метрик в одиночку.
+Но предоставленный trace не доказывает, что именно внутри DB заняло 4.72s: execution query, lock wait, connection-pool acquisition или network/storage wait. Не называй причиной плохой query plan или отсутствие индекса, пока это не подтверждено DB metrics, wait events, query statistics и безопасным review execution plan.
+
+Отдельный пример `ord-7f32` показывает `upstream_status=502` и `upstream_response_time=0.018s`. Это быстрый upstream 502, а не пятисекундный timeout. В сценарии нет достаточных logs/spans, чтобы установить его точную причину. Расследуй его отдельно по request ID; не приписывай все 502 той же DB-задержке без evidence.
 
 Evidence:
 - Gateway upstream response time около 5 секунд у 504.
 - Orders span почти целиком ждёт inventory.
-- Inventory span показывает DB query как доминирующую длительность.
+- Inventory span показывает DB dependency как доминирующую длительность.
 - Payment span не достигается в failed workflow.
 - CPU/memory не показывают saturation.
 - Kubernetes Pod, Service и EndpointSlice выглядят нормально.
 
-Root cause — регрессия latency запроса к inventory DB после изменения, а 502/504 — downstream effects в цепочке.
+Вывод по имеющимся данным: причина 504 — задержка inventory DB dependency, но точный DB-level mechanism требует дополнительной диагностики. Причина быстрого 502 в предоставленном evidence не установлена.
 
 </details>
 
