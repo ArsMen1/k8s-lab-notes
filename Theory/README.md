@@ -21,7 +21,7 @@
 | Приоритет | Тема | Материалы |
 |---|---|---|
 | P0 | Storage: PV/PVC/StorageClass/CSI | [Теория](09-storage/README.md) · [Манифесты](../Manifests/storage/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
-| P0 | StatefulSet | [Теория](10-statefulset/README.md) · [Манифесты](../Manifests/statefulset/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
+| P0 | StatefulSet | [Теория](10-statefulset/README.md) · [Манифесты](../Manifests/statefulset/README.md) · [P0 fundamentals](../labs/fundamentals-p0/README.md) · [rollout troubleshooting](../labs/troubleshooting/statefulset-rollout-stuck.md) |
 | P0 | RBAC и ServiceAccounts | [Теория](11-rbac/README.md) · [Манифесты](../Manifests/rbac/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
 | P0 | Resources/QoS/Eviction | [Теория](12-resources-qos/README.md) · [CPU throttling](12-resources-qos/cpu-throttling.md) · [Memory accounting](12-resources-qos/memory-accounting.md) · [Node Capacity/Allocatable](12-resources-qos/node-capacity-allocatable.md) · [Disk I/O](12-resources-qos/disk-io-performance.md) · [Performance troubleshooting](12-resources-qos/performance-troubleshooting-normal-resources.md) · [JVM Heap/GC/STW](12-resources-qos/jvm-heap-gc-stw.md) · [Thread dumps/Deadlocks](12-resources-qos/thread-dumps-deadlocks.md) · [Манифесты](../Manifests/resources/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
 | P0 | DNS/CoreDNS | [Теория](13-dns-coredns/README.md) · [Лаборатории](../labs/fundamentals-p0/README.md) |
