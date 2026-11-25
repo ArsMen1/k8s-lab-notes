@@ -19,7 +19,7 @@ autoscaling/v2 позволяет задавать scaleUp/scaleDown behavior: s
     kubectl get deployment <name> -n <namespace> -o yaml
     kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
 
-Unknown/FailedGetResourceMetric: metrics API недоступен, нет CPU requests, Pod не Ready/не имеет метрик, selector неверен или targetRef не совпадает.
+`<unknown>` / `FailedGetResourceMetric`: сначала проверь доступность resource metrics API и наличие актуальных samples, затем CPU requests у всех контейнеров, участвующих в CPU utilization, и корректность `scaleTargetRef`/selector. Новые, NotReady Pod и отсутствующие для отдельных Pod samples могут быть исключены из первичного расчёта и консервативно влиять на scaling; сами по себе они не всегда означают отказ Metrics API. Смотри Conditions и Events конкретного HPA.
 
 Связано: [Resources/QoS](../12-resources-qos/README.md), [HPA manifests](../../Manifests/hpa/README.md), [P1 labs](../../labs/fundamentals-p1/README.md).
 Официально: [HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/), [autoscaling/v2 API](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/).
