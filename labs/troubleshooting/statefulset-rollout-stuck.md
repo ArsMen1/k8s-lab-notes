@@ -81,7 +81,7 @@ EndpointSlice показывает готовность backend-ов на уро
 
 В шаблоне StatefulSet указан несуществующий image tag `2.8.0-prodd`. Это ошибка release configuration, а не неисправность CSI или потеря PVC.
 
-При стандартном RollingUpdate StatefulSet обновляет Pod по одному, начиная с наибольшего ordinal. Контроллер ждёт, пока обновлённый Pod станет Running и Ready, прежде чем переходить к предыдущему ordinal. Поэтому неготовый `orders-db-2` останавливает дальнейший rollout; старые `orders-db-0` и `orders-db-1` сами по себе не являются доказательством отдельной поломки.
+При RollingUpdate с `podManagementPolicy=OrderedReady` (значение по умолчанию) StatefulSet обновляет Pod по одному, начиная с наибольшего ordinal. Контроллер ждёт, пока обновлённый Pod станет Running и Ready, прежде чем переходить к предыдущему ordinal. Поэтому неготовый `orders-db-2` останавливает дальнейший rollout; старые `orders-db-0` и `orders-db-1` сами по себе не являются доказательством отдельной поломки.
 
 ## Другие причины, которые нужно отличать
 
