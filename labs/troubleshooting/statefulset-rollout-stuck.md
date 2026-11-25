@@ -41,8 +41,8 @@ kubectl get events -n <namespace> --sort-by=.metadata.creationTimestamp
 Сравни ревизии и настройки rollout:
 
 ```bash
-kubectl get sts <statefulset> -n <namespace> -o jsonpath='{.status.currentRevision}{" -> "}{.status.updateRevision}{" ready="}{.status.readyReplicas}/{.spec.replicas}{"\\n"}'
-kubectl get sts <statefulset> -n <namespace> -o jsonpath='{.spec.updateStrategy.type}{" partition="}{.spec.updateStrategy.rollingUpdate.partition}{" podManagementPolicy="}{.spec.podManagementPolicy}{"\\n"}'
+kubectl get sts <statefulset> -n <namespace> -o jsonpath='{.status.currentRevision}{" -> "}{.status.updateRevision}{" ready="}{.status.readyReplicas}/{.spec.replicas}{"\n"}'
+kubectl get sts <statefulset> -n <namespace> -o jsonpath='{.spec.updateStrategy.type}{" partition="}{.spec.updateStrategy.rollingUpdate.partition}{" podManagementPolicy="}{.spec.podManagementPolicy}{"\n"}'
 kubectl rollout history statefulset/<statefulset> -n <namespace>
 ```
 
@@ -52,7 +52,7 @@ kubectl rollout history statefulset/<statefulset> -n <namespace>
 
 ```bash
 kubectl describe pod <statefulset>-<ordinal> -n <namespace>
-kubectl get pod <statefulset>-<ordinal> -n <namespace> -o jsonpath='{range .status.containerStatuses[*]}{.name}{" image="}{.image}{" waiting="}{.state.waiting.reason}{" message="}{.state.waiting.message}{"\\n"}{end}'
+kubectl get pod <statefulset>-<ordinal> -n <namespace> -o jsonpath='{range .status.containerStatuses[*]}{.name}{" image="}{.image}{" waiting="}{.state.waiting.reason}{" message="}{.state.waiting.message}{"\n"}{end}'
 kubectl get pvc -n <namespace> -o wide
 kubectl describe pvc <claim-for-ordinal> -n <namespace>
 ```
