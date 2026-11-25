@@ -31,6 +31,8 @@ Parallel ослабляет порядок создания/удаления, н
 
 Проверяй selector ↔ template labels, serviceName, headless Service, PVC per ordinal, StorageClass, readiness и порядок запуска.
 
+Практика: [StatefulSet rollout завис на одном ordinal](../../labs/troubleshooting/statefulset-rollout-stuck.md) — диагностика blocked ordinal, revisions, PVC и безопасного rollback.
+
 Связанные материалы: [Storage](../09-storage/README.md), [StatefulSet manifests](../../Manifests/statefulset/README.md), [P0 labs](../../labs/fundamentals-p0/README.md).
 
 Официально: [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/).
