@@ -16,6 +16,10 @@
 - [PVC Pending](pvc-pending.md)
 - [ImagePullBackOff](imagepullbackoff.md)
 
+## Stateful workloads
+
+- [StatefulSet rollout завис на одном ordinal](statefulset-rollout-stuck.md)
+
 ## Pod troubleshooting reference
 - [Pod Troubleshooting Toolkit — read-only команды, symptom-to-check таблица и incident report](pod-troubleshooting-toolkit.md)
 
