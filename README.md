@@ -38,16 +38,20 @@
 
 Если не знаешь, с чего начать, смотри [сравнение Terraform и Pulumi](setup/terraform-vs-pulumi.md) — там объясняются различия и рекомендованный маршрут обучения.
 
-## Ручное развёртывание манифестов в существующий кластер
+## Ручное развёртывание манифестов в учебном кластере
 
-Для Killercoda, minikube, kind или уже работающего кластера:
+Команды ниже предназначены для Killercoda, minikube, kind или другого выделенного учебного кластера. Не выполняй их в production или shared-кластере без отдельного согласования.
 
 ```bash
 git clone https://github.com/ArsMen1/k8s-lab-notes.git
 cd k8s-lab-notes
 
 kubectl apply -f Manifests/payments-api/namespace.yaml
-kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/payments-api/configmap.yaml
+kubectl apply -f Manifests/payments-api/secret.yaml
+kubectl apply -f Manifests/payments-api/service.yaml
+kubectl apply -f Manifests/payments-api/deployment.yaml
+
 kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
 kubectl apply -f Manifests/echo/namespace.yaml
@@ -56,15 +60,15 @@ kubectl apply -f Manifests/echo/
 kubectl -n payments get deploy,rs,pods,svc
 ```
 
-Не применяй `Manifests/` целиком: внутри есть намеренно сломанные сценарии и отдельные лаборатории CRD. Для каталогов приложений сначала создавай namespace отдельным файлом, затем применяй каталог; порядок файлов при `kubectl apply -f <directory>/` не следует считать зависимостно-безопасным. Соблюдай README конкретного упражнения.
+Не применяй `Manifests/` целиком: внутри есть намеренно сломанные сценарии и отдельные лаборатории CRD. Для каталогов приложений сначала создавай namespace отдельным файлом, затем применяй namespaced-ресурсы; порядок файлов при `kubectl apply -f <directory>/` не следует считать зависимостно-безопасным. Для `payments-api` намеренно перечислены отдельные файлы, чтобы не создавать необязательный NodePort автоматически. Соблюдай README конкретного упражнения.
 
-Снаружи учебный NodePort:
+Снаружи учебный NodePort создаётся отдельно и только если он действительно нужен:
 
 ```bash
 kubectl apply -f Manifests/payments-api/service-nodeport.yaml
 ```
 
-Порт 30080. Это учебный способ доступа, а не универсальная рекомендация для production.
+Порт 30080. NodePort открывает порт на адресах Node в пределах сетевой доступности кластера; это учебный способ доступа, а не универсальная рекомендация для production. Перед применением проверь, что порт свободен и кластер изолирован.
 
 ## Правила репозитория
 
