@@ -8,15 +8,20 @@
 
 | Каталог | Что это |
 |---------|---------|
-| `payments-api/` | рабочий сервис: Namespace, ConfigMap, Secret, Deployment, Service |
+| `payments-api/` | рабочий сервис: Namespace, ConfigMap, Secret, Deployment, Service; отдельный необязательный NodePort |
 | `config-server/` | Spring Cloud Config Server и его ClusterIP |
 | `echo/` | крошечный сервис в namespace `lab`, чтобы потрогать DNS между namespace |
 
-Перед применением каталога сначала создай namespace отдельной командой. `kubectl apply -f <каталог>/` не гарантирует, что Namespace будет обработан раньше остальных файлов: например, `configmap.yaml` сортируется раньше `namespace.yaml`.
+Перед применением сначала создай namespace отдельной командой. `kubectl apply -f <каталог>/` не гарантирует, что Namespace будет обработан раньше остальных файлов: например, `configmap.yaml` сортируется раньше `namespace.yaml`.
+
+Для базового `payments-api` перечисляй файлы явно: так необязательный `service-nodeport.yaml` не будет создан вместе с остальными ресурсами.
 
 ```bash
 kubectl apply -f Manifests/payments-api/namespace.yaml
-kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/payments-api/configmap.yaml
+kubectl apply -f Manifests/payments-api/secret.yaml
+kubectl apply -f Manifests/payments-api/service.yaml
+kubectl apply -f Manifests/payments-api/deployment.yaml
 
 kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
@@ -27,7 +32,13 @@ kubectl apply -f Manifests/echo/
 
 Повторное применение `namespace.yaml` внутри каталога безопасно для этого примера, поскольку оно декларативно задаёт тот же объект. Для собственных каталогов сохраняй явный bootstrap namespace перед namespaced-ресурсами.
 
-`payments-api/service-nodeport.yaml` — только для учебного кластера без Ingress. В проде снаружи ходят через Ingress или облачный LoadBalancer.
+`payments-api/service-nodeport.yaml` — необязательный Service для доступа через NodePort в изолированном учебном кластере без Ingress. Применяй его отдельно, только если он нужен и порт свободен:
+
+```bash
+kubectl apply -f Manifests/payments-api/service-nodeport.yaml
+```
+
+NodePort открывает порт на адресах Node в пределах сетевой доступности кластера. В production снаружи обычно используют Ingress/Gateway или облачный LoadBalancer в соответствии с архитектурой.
 
 Секрет в git — учебная заглушка. Настоящие пароли сюда не кладут.
 
