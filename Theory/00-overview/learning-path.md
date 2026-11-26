@@ -16,7 +16,11 @@
 
 ```bash
 kubectl apply -f Manifests/payments-api/namespace.yaml
-kubectl apply -f Manifests/payments-api/
+kubectl apply -f Manifests/payments-api/configmap.yaml
+kubectl apply -f Manifests/payments-api/secret.yaml
+kubectl apply -f Manifests/payments-api/service.yaml
+kubectl apply -f Manifests/payments-api/deployment.yaml
+# Необязательный NodePort не создаётся автоматически; см. Manifests/README.md
 kubectl apply -f Manifests/config-server/namespace.yaml
 kubectl apply -f Manifests/config-server/
 kubectl apply -f Manifests/echo/namespace.yaml
