@@ -25,7 +25,7 @@
 > `apply`, `delete`, `scale` и `rollout undo` изменяют состояние кластера. Перед запуском проверь context, namespace и объект. Для предварительного просмотра используй `kubectl diff -f file.yaml`; для серверной проверки без сохранения — `kubectl apply --dry-run=server -f file.yaml` (если API и admission webhooks поддерживают dry-run).
 
 * `kubectl apply -f file.yaml` — применить манифест (создать или обновить).
-* Для каталога приложения сначала создай namespace, затем применяй каталог: `kubectl apply -f Manifests/payments-api/namespace.yaml && kubectl apply -f Manifests/payments-api/`. Не полагайся на порядок файлов в директории. Каталог `Manifests/` целиком не применяй: там лежат сломанные `incidents/`.
+* Для базового `payments-api` сначала создай namespace, затем применяй `configmap.yaml`, `secret.yaml`, `service.yaml` и `deployment.yaml` отдельными командами. Не применяй весь каталог `Manifests/payments-api/`: он также содержит необязательный `service-nodeport.yaml`, который открывает NodePort на узлах. Его создавай отдельно только в изолированной учебной среде. Не полагайся на порядок файлов в директории. Каталог `Manifests/` целиком не применяй: там лежат намеренно сломанные `incidents/`.
 * `kubectl delete -f file.yaml` — удалить ресурс, описанный в файле.
 * `kubectl delete pod <имя-пода>` — удалить под вручную.
 
