@@ -76,3 +76,6 @@ kubectl apply -f Manifests/payments-api/service-nodeport.yaml
 2. В конце практической заметки фиксируй, что именно увидел в кластере.
 3. В git храни манифесты и безопасные примеры. Не коммить реальные пароли, kubeconfig, приватные ключи и дампы.
 4. Перед применением незнакомого каталога сначала читай README конкретного упражнения.
+
+- `Theory/02-networking/gateway-api.md` — Gateway API: GatewayClass, Gateway, listeners, HTTPRoute и диагностика.
+- `labs/troubleshooting/gateway-api-404-503.md` — практический runbook Gateway API 404/503.
