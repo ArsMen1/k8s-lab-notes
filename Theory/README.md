@@ -42,3 +42,5 @@ P0 означает, что теория, примеры манифестов и
 - Не считай тему освоенной, пока не можешь объяснить причинно-следственную связь и диагностировать типовую поломку.
 
 Начальная точка: [общий маршрут обучения](00-overview/learning-path.md).
+
+| P1 | Gateway API | [Теория](02-networking/gateway-api.md) · [Troubleshooting lab: 404/503](../labs/troubleshooting/gateway-api-404-503.md) · [Официальная документация](https://gateway-api.sigs.k8s.io/docs/introduction/) |
