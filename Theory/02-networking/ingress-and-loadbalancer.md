@@ -64,3 +64,7 @@ End-to-end упражнение с backend, Service, Ingress и self-signed TLS 
 - [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 - [Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
 - [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/)
+
+## Продолжение: Gateway API
+
+Для новой модели маршрутизации смотри [Gateway API: модель ресурсов и диагностика](gateway-api.md) и [практическую лабораторию 404/503](../../labs/troubleshooting/gateway-api-404-503.md). Ingress остаётся стабильным API; Gateway API — отдельный набор CRD, которому необходим совместимый controller.
