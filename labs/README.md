@@ -23,3 +23,5 @@
 ## Чего здесь нет
 
 В тексте дня нет блока «правильный ответ» под задачей. Если открыть разбор раньше, чем появилась своя версия, лаборатория превращается в чтение чужого постмортема. Это быстро и почти бесполезно.
+
+- [Gateway API troubleshooting](troubleshooting/gateway-api-404-503.md) — GatewayClass/controller, listener attachment, backendRefs и диагностика HTTP 404/503.
