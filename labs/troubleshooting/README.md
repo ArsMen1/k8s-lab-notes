@@ -60,3 +60,7 @@
 - [Volume attach/detach зависает](storage-attach-detach.md)
 
 Для каждого инцидента сохрани timeline, impact, Events, состояние объекта, подтверждённый root cause, mitigation, validation и prevention. Не делай вывод по одному симптому. Перед командами проверяй kubectl context и namespace; не выводи Secret/credentials.
+
+## Gateway API incidents
+
+- [Gateway API: HTTP 404/503 и Route не подключается](gateway-api-404-503.md)
